@@ -1,0 +1,10 @@
+{
+    "[powershell]": {
+        "editor.defaultFormatter": "ms-vscode.powershell",
+        "editor.formatOnSave": true
+    },
+    "files.associations": {
+        "*.ps1": "powershell"
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell"
+}
