@@ -1,0 +1,38 @@
+{
+  "auths": {},
+  "credsStore": "desktop",
+  "experimental": false,
+  "stackOrchestrator": "swarm",
+  "builder": {
+    "gc": {
+      "enabled": true,
+      "policy": [
+        {
+          "all": true,
+          "filter": [
+            "unused-for=24h"
+          ],
+          "keepStorage": "10GB"
+        }
+      ]
+    }
+  },
+  "dockerPath": "",
+  "contexts": [
+    {
+      "name": "desktop-linux",
+      "type": "docker",
+      "description": "Docker Desktop",
+      "dockerHost": "npipe:////./pipe/dockerDesktopLinuxEngine"
+    }
+  ],
+  "currentContext": "desktop-linux",
+  "proxies": {},
+  "registryMirrors": [],
+  "insecureRegistries": [],
+  "debug": false,
+  "metricsEnabled": true,
+  "contextStore": "desktop",
+  "cliPluginsExtraDirs": [],
+  "credentialStore": "desktop"
+}

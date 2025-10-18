@@ -1,0 +1,109 @@
+﻿{
+    "defaultProfile":  "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "schemes":  [
+                    {
+                        "cyan":  "#3A96DD",
+                        "red":  "#C50F1F",
+                        "green":  "#13A10E",
+                        "yellow":  "#C19C00",
+                        "selectionBackground":  "#FFFFFF",
+                        "brightWhite":  "#F2F2F2",
+                        "name":  "Campbell",
+                        "brightYellow":  "#F9F1A5",
+                        "cursorColor":  "#F2F2F2",
+                        "brightCyan":  "#61D6D6",
+                        "background":  "#0C0C0C",
+                        "black":  "#0C0C0C",
+                        "brightPurple":  "#B4009E",
+                        "brightBlue":  "#3B78FF",
+                        "brightGreen":  "#16C60C",
+                        "foreground":  "#F2F2F2",
+                        "white":  "#CCCCCC",
+                        "purple":  "#881798",
+                        "brightBlack":  "#767676",
+                        "blue":  "#0037DA",
+                        "brightRed":  "#E74856"
+                    }
+                ],
+    "keybindings":  [
+                        {
+                            "command":  "closeTab",
+                            "keys":  [
+                                         "ctrl+shift+w"
+                                     ]
+                        },
+                        {
+                            "command":  "newTab",
+                            "keys":  [
+                                         "ctrl+shift+t"
+                                     ]
+                        },
+                        {
+                            "command":  "newWindow",
+                            "keys":  [
+                                         "ctrl+shift+n"
+                                     ]
+                        },
+                        {
+                            "command":  "nextTab",
+                            "keys":  [
+                                         "ctrl+tab"
+                                     ]
+                        },
+                        {
+                            "command":  "prevTab",
+                            "keys":  [
+                                         "ctrl+shift+tab"
+                                     ]
+                        },
+                        {
+                            "command":  "splitHorizontal",
+                            "keys":  [
+                                         "alt+shift+-"
+                                     ]
+                        },
+                        {
+                            "command":  "splitVertical",
+                            "keys":  [
+                                         "alt+shift+plus"
+                                     ]
+                        }
+                    ],
+    "profiles":  {
+                     "list":  [
+                                  {
+                                      "hidden":  false,
+                                      "startingDirectory":  "~",
+                                      "commandline":  "powershell.exe",
+                                      "guid":  "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                                      "name":  "Windows PowerShell"
+                                  },
+                                  {
+                                      "hidden":  false,
+                                      "startingDirectory":  "~",
+                                      "commandline":  "cmd.exe",
+                                      "guid":  "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                                      "name":  "Command Prompt"
+                                  },
+                                  {
+                                      "name":  "Ubuntu",
+                                      "icon":  "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                                      "commandline":  "wsl.exe -d Ubuntu",
+                                      "startingDirectory":  "~",
+                                      "hidden":  false,
+                                      "guid":  "{2c4de342-38b7-51cf-b940-2309a097f518}"
+                                  }
+                              ],
+                     "defaults":  {
+                                      "snapOnInput":  true,
+                                      "scrollbarState":  "hidden",
+                                      "cursorShape":  "bar",
+                                      "cursorHeight":  1,
+                                      "historySize":  9001,
+                                      "fontFace":  "Cascadia Code",
+                                      "fontSize":  12,
+                                      "colorScheme":  "Campbell"
+                                  }
+                 },
+    "":  "https://aka.ms/terminal-profiles-schema"
+}

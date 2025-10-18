@@ -1,0 +1,82 @@
+# Requirements for Windows Environment
+# This file lists prerequisites and dependencies
+
+## System Prerequisites
+
+- **Windows 10** (version 1903 or higher) or **Windows 11**
+- **PowerShell 5.1** or higher
+- **Administrator rights** required
+- **Internet connection** for downloads
+- **Disk space**: minimum 10 GB available
+
+## Required Windows Features
+
+- **Microsoft-Windows-Subsystem-Linux** (for WSL)
+- **VirtualMachinePlatform** (for WSL2 and Docker)
+- **Microsoft-Hyper-V** (for Docker Desktop)
+
+## Installed Components
+
+### 1. winget
+- **Version**: Latest available version
+- **Source**: Microsoft Store or GitHub
+- **Configuration**: Optimized settings for usage
+
+### 2. WSL Ubuntu
+- **Version**: Ubuntu Latest (22.04 LTS or higher)
+- **WSL Version**: WSL2
+- **Packages**: curl, wget, git, vim, htop, tree, unzip, zip
+
+### 3. Windows Terminal
+- **Version**: Latest available version
+- **Configuration**: PowerShell, CMD and Ubuntu profiles
+- **Fonts**: Cascadia Code Nerd Font by default
+
+### 4. NerdFonts
+- **Installed fonts**: CascadiaCode, FiraCode, JetBrainsMono, SourceCodePro
+- **Installation**: Windows and WSL Ubuntu
+- **Configuration**: Integration with Windows Terminal and editors
+
+### 5. Docker Desktop
+- **Version**: Latest available version
+- **Configuration**: WSL2 backend
+- **Extensions**: Docker Compose included
+
+## Dependencies
+
+### PowerShell Modules
+- No additional modules required
+
+### Windows Services
+- **Windows Update**: For security updates
+- **Windows Defender**: For security
+
+### Network
+- **Ports**: 80, 443 (for downloads)
+- **DNS**: Functional DNS resolution
+
+## Known Limitations
+
+- **Restart required** after WSL and Docker installation
+- **Hyper-V** may be incompatible with some hypervisors
+- **WSL2** requires recent Windows version
+
+## Support
+
+- **Windows 10**: Version 1903+ (Build 18362+)
+- **Windows 11**: All versions
+- **Architecture**: x64 only
+- **Languages**: Multi-language support
+
+## Troubleshooting
+
+### Common Issues
+1. **WSL2 not available**: Check Windows version
+2. **Docker won't start**: Check Hyper-V and WSL2
+3. **Fonts not displayed**: Restart Windows Terminal
+4. **winget not found**: Check installation from Store
+
+### Logs
+- **Location**: `logs/` in script directory
+- **Format**: Separate files per component
+- **Rotation**: No automatic rotation
