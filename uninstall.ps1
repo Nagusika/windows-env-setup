@@ -5,6 +5,8 @@ param(
     [switch]$KeepWSL,
     [switch]$KeepDocker,
     [switch]$KeepFonts,
+    [switch]$KeepGit,
+    [switch]$KeepGitHubCli,
     [switch]$Verbose
 )
 
@@ -21,6 +23,40 @@ function Write-Log {
     $LogMessage = "[$Timestamp] [$Level] $Message"
     Write-Host $LogMessage
     Add-Content -Path "$LogDir\uninstall.log" -Value $LogMessage
+}
+
+# Function to uninstall Git
+function Uninstall-Git {
+    if ($KeepGit) {
+        Write-Log "Git uninstallation skipped" "SKIP"
+        return
+    }
+
+    Write-Log "Uninstalling Git..."
+    try {
+        winget uninstall --id Git.Git --silent --accept-source-agreements
+        Write-Log "Git uninstalled successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error uninstalling Git: $($_.Exception.Message)" "ERROR"
+    }
+}
+
+# Function to uninstall GitHub CLI
+function Uninstall-GitHubCli {
+    if ($KeepGitHubCli) {
+        Write-Log "GitHub CLI uninstallation skipped" "SKIP"
+        return
+    }
+
+    Write-Log "Uninstalling GitHub CLI..."
+    try {
+        winget uninstall --id GitHub.cli --silent --accept-source-agreements
+        Write-Log "GitHub CLI uninstalled successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error uninstalling GitHub CLI: $($_.Exception.Message)" "ERROR"
+    }
 }
 
 # Function to uninstall winget
@@ -202,6 +238,8 @@ function Main {
         Uninstall-NerdFonts
         Uninstall-WSL
         Uninstall-WindowsTerminal
+        Uninstall-GitHubCli
+        Uninstall-Git
         Uninstall-Winget
         Remove-ConfigurationFiles
         

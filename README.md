@@ -9,6 +9,8 @@ Repository to automate the installation and configuration of Windows development
 - **Windows Terminal** - Modern terminal for Windows
 - **NerdFonts** - Fonts with icons for Windows and WSL
 - **Docker Desktop** - Containerization
+- **Git** - Version control system
+- **GitHub CLI** - Command-line interface for GitHub
 
 ## Usage
 
@@ -27,6 +29,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\scripts\install-terminal.ps1
 .\scripts\install-nerdfonts.ps1
 .\scripts\install-docker.ps1
+.\scripts\install-git.ps1
+.\scripts\install-github-cli.ps1
 ```
 
 ## Prerequisites
@@ -46,7 +50,9 @@ windows-env-setup/
 │   ├── install-wsl.ps1
 │   ├── install-terminal.ps1
 │   ├── install-nerdfonts.ps1
-│   └── install-docker.ps1
+│   ├── install-docker.ps1
+│   ├── install-git.ps1
+│   └── install-github-cli.ps1
 ├── config/                  # Configuration files
 │   ├── wsl.conf
 │   └── terminal-settings.json

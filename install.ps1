@@ -5,6 +5,8 @@ param(
     [switch]$SkipWSL,
     [switch]$SkipDocker,
     [switch]$SkipFonts,
+    [switch]$SkipGit,
+    [switch]$SkipGitHubCli,
     [switch]$Verbose
 )
 
@@ -114,6 +116,42 @@ function Install-NerdFonts {
 }
 
 # Function to install Docker
+# Function to install Git
+function Install-Git {
+    if ($SkipGit) {
+        Write-Log "Git installation skipped" "SKIP"
+        return
+    }
+
+    Write-Log "Installing Git..."
+    try {
+        & ".\scripts\install-git.ps1"
+        Write-Log "Git installed successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error installing Git: $($_.Exception.Message)" "ERROR"
+        throw
+    }
+}
+
+# Function to install GitHub CLI
+function Install-GitHubCli {
+    if ($SkipGitHubCli) {
+        Write-Log "GitHub CLI installation skipped" "SKIP"
+        return
+    }
+
+    Write-Log "Installing GitHub CLI..."
+    try {
+        & ".\scripts\install-github-cli.ps1"
+        Write-Log "GitHub CLI installed successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error installing GitHub CLI: $($_.Exception.Message)" "ERROR"
+        throw
+    }
+}
+
 function Install-Docker {
     if ($SkipDocker) {
         Write-Log "Docker installation skipped" "SKIP"
@@ -138,6 +176,8 @@ function Main {
     try {
         Test-Prerequisites
         Install-Winget
+        Install-Git
+        Install-GitHubCli
         Install-Terminal
         Install-NerdFonts
         Install-WSL

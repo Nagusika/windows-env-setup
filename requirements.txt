@@ -37,7 +37,15 @@
 - **Installation**: Windows and WSL Ubuntu
 - **Configuration**: Integration with Windows Terminal and editors
 
-### 5. Docker Desktop
+### 5. Git
+- **Version**: Latest available version
+- **Source**: winget
+
+### 6. GitHub CLI
+- **Version**: Latest available version
+- **Source**: winget
+
+### 7. Docker Desktop
 - **Version**: Latest available version
 - **Configuration**: WSL2 backend
 - **Extensions**: Docker Compose included
