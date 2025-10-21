@@ -29,16 +29,21 @@ L'intégration de GlazeWM et Zebar dans le système `windows-env-setup` est main
    - Effets visuels (bordures, coins arrondis, transparence)
    - Thème Gruvbox
 
-4. **`config/zebar-config.yaml`**
-   - Configuration de la barre de statut
+4. **`config/zebar-with-glazewm.html`**
+   - Configuration React-based de la barre de statut
    - Layout en 3 colonnes (gauche/centre/droite)
-   - Widgets: workspaces, réseau, CPU, mémoire, batterie, météo, horloge
+   - Widgets interactifs: workspaces, réseau, CPU, mémoire, batterie, météo, horloge
+   - Stats cliquables pour toggle entre % et détails
+   - Media controls (lecture/pause, précédent/suivant)
+   - Toggle tiling direction
    - Thème Gruvbox dark
-   - Animations et transitions fluides
 
-5. **`config/zebar-script.js`**
-   - Script pour la fonctionnalité de clic sur les workspaces
-   - Permet de changer de workspace en cliquant sur la barre
+5. **`config/styles_gruvbox.css`**
+   - Styles CSS Gruvbox complets
+   - Workspaces en forme de tabs (haut arrondi, bas carré)
+   - Animations et transitions fluides
+   - Effets hover et focus avancés
+   - Stats cliquables stylisés
 
 ### Documentation
 6. **`docs/GLAZEWM_ZEBAR_GUIDE.md`**
@@ -189,8 +194,8 @@ windows-env-setup/
 │   └── install-zebar.ps1            ← Nouveau
 ├── config/
 │   ├── glazewm-config.yaml          ← Nouveau
-│   ├── zebar-config.yaml            ← Nouveau
-│   └── zebar-script.js              ← Nouveau
+│   ├── zebar-with-glazewm.html      ← Nouveau (React-based)
+│   └── styles_gruvbox.css           ← Nouveau
 ├── docs/
 │   └── GLAZEWM_ZEBAR_GUIDE.md       ← Nouveau
 ├── install.ps1                      ← Modifié
@@ -213,13 +218,13 @@ windows-env-setup/
 
 Les fichiers sont automatiquement copiés vers :
 - `%USERPROFILE%\.glzr\glazewm\config.yaml`
-- `%USERPROFILE%\.glzr\zebar\config.yaml`
-- `%USERPROFILE%\.glzr\zebar\script.js`
+- `%USERPROFILE%\.glzr\zebar\with-glazewm.html`
+- `%USERPROFILE%\.glzr\zebar\styles_gruvbox.css`
 
 Les backups restent dans :
 - `windows-env-setup\config\glazewm-config.yaml`
-- `windows-env-setup\config\zebar-config.yaml`
-- `windows-env-setup\config\zebar-script.js`
+- `windows-env-setup\config\zebar-with-glazewm.html`
+- `windows-env-setup\config\styles_gruvbox.css`
 
 ## 🎯 Prochaines Étapes
 

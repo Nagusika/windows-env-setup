@@ -120,8 +120,8 @@ The configuration automatically assigns applications to specific workspaces:
 
 ### Configuration Files Location
 - **GlazeWM**: `%USERPROFILE%\.glzr\glazewm\config.yaml`
-- **Zebar**: `%USERPROFILE%\.glzr\zebar\config.yaml`
-- **Zebar Script**: `%USERPROFILE%\.glzr\zebar\script.js`
+- **Zebar HTML**: `%USERPROFILE%\.glzr\zebar\with-glazewm.html`
+- **Zebar Styles**: `%USERPROFILE%\.glzr\zebar\styles_gruvbox.css`
 
 ### Editing Configuration
 1. Edit the configuration files in the locations above
@@ -131,27 +131,35 @@ The configuration automatically assigns applications to specific workspaces:
 ### Backup Configuration
 The installation script backs up your configuration files to:
 - `windows-env-setup\config\glazewm-config.yaml`
-- `windows-env-setup\config\zebar-config.yaml`
-- `windows-env-setup\config\zebar-script.js`
+- `windows-env-setup\config\zebar-with-glazewm.html`
+- `windows-env-setup\config\styles_gruvbox.css`
 
 ## 📊 Zebar Status Bar Information
 
 The status bar displays (from left to right):
 
 ### Left Section
-- 🔷 Logo icon
-- 🏢 Workspace indicators (clickable)
+- 🪟 Bar icon (GlazeWM logo)
+- 🏢 Workspace indicators (clickable tabs with tab-style design)
+- 📝 Current window title
 
 ### Center Section
-- 📝 Current window title (truncated to 80 characters)
+- (Empty / expandable)
 
 ### Right Section
-- 🌐 Network status (WiFi/Ethernet with signal strength)
-- 🧠 Memory usage percentage
-- ⚡ CPU usage percentage (red when >85%)
-- 🔋 Battery level and charging status
-- 🌦️ Weather information
-- 🕐 Clock (Day, Date, Time)
+- 🎵 **Media controls** (when playing) - Previous/Play-Pause/Next
+- ⚡ **Tiling direction toggle** - Horizontal/Vertical indicator (clickable)
+- 🌐 **Network status** (clickable) - Toggle between SSID and details
+- 🧠 **Memory usage** (clickable) - Toggle between % and GB used/total
+- ⚡ **CPU usage** (clickable) - Toggle between % and GHz frequency
+- 🔋 **Battery level** (clickable) - Toggle between % and time remaining
+- 🌦️ **Weather information** - Temperature with icon
+- 🕐 **Clock** - Day, Date, Time
+
+### Interactive Features
+All stats (network, memory, CPU, battery) are **clickable** and toggle between:
+- **Simple view**: Percentage or basic info
+- **Detailed view**: Additional information (GB, GHz, time remaining, etc.)
 
 ## 🐛 Troubleshooting
 

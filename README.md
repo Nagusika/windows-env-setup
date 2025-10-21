@@ -112,8 +112,8 @@ windows-env-setup/
 │   ├── wsl.conf
 │   ├── terminal-settings.json
 │   ├── glazewm-config.yaml
-│   ├── zebar-config.yaml
-│   └── zebar-script.js
+│   ├── zebar-with-glazewm.html
+│   └── styles_gruvbox.css
 ├── logs/                    # Installation logs
 ├── IMPROVEMENTS.md          # Detailed changelog
 ├── PACKAGES.md              # Package reference guide
