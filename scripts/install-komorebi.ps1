@@ -262,6 +262,7 @@ function New-KomorebiConfig {
   "float_rules": [
     { "kind": "Exe", "id": "explorer.exe", "matching_strategy": "Legacy" },
     { "kind": "Exe", "id": "taskmgr.exe", "matching_strategy": "Legacy" },
+    { "kind": "Exe", "id": "zebar.exe", "matching_strategy": "Legacy" },
     { "kind": "Title", "id": "Settings", "matching_strategy": "Legacy" },
     { "kind": "Class", "id": "TaskManagerWindow", "matching_strategy": "Legacy" }
   ],
@@ -308,6 +309,14 @@ function New-KomorebiConfig {
     id: WindowsTerminal.exe
   options:
     - ObjectNameChange
+
+- name: "Zebar"
+  identifier:
+    kind: Exe
+    id: zebar.exe
+  float_identifiers:
+    - kind: Exe
+      id: zebar.exe
 "@
         
         $applicationsConfig | Set-Content -Path "$configPath\applications.yaml" -Encoding UTF8
@@ -589,7 +598,7 @@ MarkWinUsed() {
 }
 #Space:: {
     MarkWinUsed()
-    Run("flow-launcher.exe")
+    Run("Flow.Launcher.exe")
 }
 
 ; === RELOAD ===
@@ -669,7 +678,7 @@ if FileExist(configPath) {
 }
 
 ; Start Zebar status bar (if installed)
-zebarPath := A_AppData . "\..\Local\Programs\Zebar\Zebar.exe"
+zebarPath := A_AppData . "\..\Local\glzr.io\Zebar\zebar.exe"
 if FileExist(zebarPath) {
     Sleep(1000)
     try {

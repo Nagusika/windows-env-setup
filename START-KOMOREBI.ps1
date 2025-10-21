@@ -14,10 +14,8 @@ Write-Host "[1/3] Starting Komorebi..." -ForegroundColor Yellow
 Start-Process -FilePath "komorebic.exe" -ArgumentList "start" -WindowStyle Hidden
 Start-Sleep -Seconds 5
 
-# Load configuration
+# Load configuration (automatically loads from ~/.config/komorebi/komorebi.json)
 Write-Host "[2/3] Loading configuration..." -ForegroundColor Yellow
-$configPath = Join-Path $env:USERPROFILE ".config\komorebi\komorebi.json"
-& komorebic configuration $configPath
 Start-Sleep -Seconds 2
 
 # Load AutoHotkey shortcuts
