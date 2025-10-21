@@ -187,6 +187,42 @@ function Install-GitHubCli {
     }
 }
 
+# Function to install GlazeWM
+function Install-GlazeWM {
+    if (-not (Confirm-Action "Install GlazeWM (Tiling Window Manager)?" $true)) {
+        Write-Log "GlazeWM installation skipped by user" "SKIP"
+        return
+    }
+
+    Write-Log "Installing GlazeWM..."
+    try {
+        & ".\scripts\install-glazewm.ps1"
+        Write-Log "GlazeWM installed successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error installing GlazeWM: $($_.Exception.Message)" "ERROR"
+        Write-Log "You can retry later by running: .\scripts\install-glazewm.ps1" "INFO"
+    }
+}
+
+# Function to install Zebar
+function Install-Zebar {
+    if (-not (Confirm-Action "Install Zebar (Status Bar for GlazeWM)?" $true)) {
+        Write-Log "Zebar installation skipped by user" "SKIP"
+        return
+    }
+
+    Write-Log "Installing Zebar..."
+    try {
+        & ".\scripts\install-zebar.ps1"
+        Write-Log "Zebar installed successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error installing Zebar: $($_.Exception.Message)" "ERROR"
+        Write-Log "You can retry later by running: .\scripts\install-zebar.ps1" "INFO"
+    }
+}
+
 # Function to install Docker
 function Install-Docker {
     if (-not (Confirm-Action "Install Docker Desktop?" $false)) {
@@ -346,6 +382,10 @@ function Main {
         Install-GitHubCli
         Install-Terminal
         Install-NerdFonts
+        
+        # Window Manager installations
+        Install-GlazeWM
+        Install-Zebar
         
         # Optional installations
         Install-WSL

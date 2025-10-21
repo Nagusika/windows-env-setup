@@ -21,6 +21,10 @@ Automated installation and configuration script for a complete Windows developme
 - **Windows Terminal** - Modern terminal for Windows
 - **NerdFonts** - Fonts with icons (CascadiaCode, FiraCode)
 
+### Window Manager (with Y/N prompts)
+- **GlazeWM** - Tiling window manager for Windows
+- **Zebar** - Customizable status bar (works with GlazeWM)
+
 ### Optional Components
 - **WSL2 + Ubuntu** - Linux Subsystem for Windows
 - **Docker Desktop** - Containerization platform
@@ -58,6 +62,8 @@ Install Git? (Y/n): y
 Install GitHub CLI? (Y/n): y
 Install Windows Terminal? (Y/n): y
 Install NerdFonts (CascadiaCode, FiraCode)? (Y/n): y
+Install GlazeWM (Tiling Window Manager)? (Y/n): y
+Install Zebar (Status Bar for GlazeWM)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): n
 Install additional useful packages? (Y/n): y
@@ -73,6 +79,8 @@ Install additional useful packages? (Y/n): y
 .\scripts\install-wsl.ps1
 .\scripts\install-terminal.ps1
 .\scripts\install-nerdfonts.ps1
+.\scripts\install-glazewm.ps1
+.\scripts\install-zebar.ps1
 .\scripts\install-docker.ps1
 .\scripts\install-git.ps1
 .\scripts\install-github-cli.ps1
@@ -95,12 +103,17 @@ windows-env-setup/
 │   ├── install-wsl.ps1
 │   ├── install-terminal.ps1
 │   ├── install-nerdfonts.ps1
+│   ├── install-glazewm.ps1
+│   ├── install-zebar.ps1
 │   ├── install-docker.ps1
 │   ├── install-git.ps1
 │   └── install-github-cli.ps1
 ├── config/                  # Configuration files
 │   ├── wsl.conf
-│   └── terminal-settings.json
+│   ├── terminal-settings.json
+│   ├── glazewm-config.yaml
+│   ├── zebar-config.yaml
+│   └── zebar-script.js
 ├── logs/                    # Installation logs
 ├── IMPROVEMENTS.md          # Detailed changelog
 ├── PACKAGES.md              # Package reference guide
@@ -110,11 +123,10 @@ windows-env-setup/
 ## 📚 Documentation
 
 - **[docs/README.md](docs/README.md)** ⭐ - Documentation index
-- **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide for beginners
-- **[SUMMARY.md](SUMMARY.md)** - Quick overview and recommendations
-- **[PACKAGES.md](PACKAGES.md)** - Complete package list with command examples
-- **[IMPROVEMENTS.md](IMPROVEMENTS.md)** - Detailed list of improvements and changes
-- **[BEFORE_AFTER.md](BEFORE_AFTER.md)** - Visual comparison of old vs new script
+- **[docs/QUICK_START.md](docs/QUICK_START.md)** - 5-minute setup guide for beginners
+- **[docs/GLAZEWM_ZEBAR_GUIDE.md](docs/GLAZEWM_ZEBAR_GUIDE.md)** ⭐ - Complete guide for GlazeWM + Zebar
+- **[docs/PACKAGES.md](docs/PACKAGES.md)** - Complete package list with command examples
+- **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Project structure overview
 
 ## 🔄 Rollback
 
@@ -179,9 +191,19 @@ Now, `pre-commit` will run automatically on every `git commit`.
 ✓ CLI Toolbox (ripgrep, fd, fzf, bat, jq)
 ```
 
+### Tiling Window Manager Setup
+```
+✓ All core tools
+✓ GlazeWM (Tiling Window Manager)
+✓ Zebar (Status Bar)
+✓ Windows Terminal
+✓ NerdFonts
+```
+
 ### Full Developer Setup
 ```
 ✓ All core tools
+✓ GlazeWM + Zebar
 ✓ WSL2 + Ubuntu
 ✓ Docker Desktop
 ✓ CLI Toolbox

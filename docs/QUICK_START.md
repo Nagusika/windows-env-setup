@@ -35,6 +35,8 @@ Install Git? (Y/n): y
 Install GitHub CLI? (Y/n): y
 Install Windows Terminal? (Y/n): y
 Install NerdFonts (CascadiaCode, FiraCode)? (Y/n): y
+Install GlazeWM (Tiling Window Manager)? (Y/n): y
+Install Zebar (Status Bar for GlazeWM)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): n
 Install additional useful packages? (Y/n): y
@@ -67,6 +69,8 @@ Install Git? (Y/n): y
 Install GitHub CLI? (Y/n): y
 Install Windows Terminal? (Y/n): y
 Install NerdFonts? (Y/n): y
+Install GlazeWM (Tiling Window Manager)? (Y/n): y
+Install Zebar (Status Bar for GlazeWM)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): y
 Install additional packages? (Y/n): y
@@ -101,6 +105,8 @@ Install Git? (Y/n): y
 Install GitHub CLI? (Y/n): y
 Install Windows Terminal? (Y/n): y
 Install NerdFonts? (Y/n): y
+Install GlazeWM (Tiling Window Manager)? (Y/n): y
+Install Zebar (Status Bar for GlazeWM)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): y
 Install additional packages? (Y/n): y
@@ -114,6 +120,8 @@ Install Git? (Y/n): y
 Install GitHub CLI? (Y/n): n
 Install Windows Terminal? (Y/n): y
 Install NerdFonts? (Y/n): y
+Install GlazeWM (Tiling Window Manager)? (Y/n): n
+Install Zebar (Status Bar for GlazeWM)? (Y/n): n
 Install WSL2 with Ubuntu? (Y/n): n
 Install Docker Desktop? (y/N): n
 Install additional packages? (Y/n): y
@@ -241,6 +249,12 @@ gh --version
 # Check Windows Terminal (if installed)
 wt --version
 
+# Check GlazeWM (if installed)
+glazewm --version
+
+# Check Zebar (if installed)
+zebar --version
+
 # Check WSL (if installed)
 wsl --list --verbose
 
@@ -260,6 +274,7 @@ bat --version
 Your Windows development environment is now set up with:
 - ✅ Modern terminal and shell
 - ✅ Version control (Git)
+- ✅ Tiling Window Manager (GlazeWM + Zebar) - optional
 - ✅ Linux subsystem (WSL) - optional
 - ✅ Containerization (Docker) - optional
 - ✅ 100+ useful tools - optional

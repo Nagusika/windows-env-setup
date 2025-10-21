@@ -8,6 +8,9 @@
 ### 📦 Packages
 - **[PACKAGES.md](PACKAGES.md)** - Liste des 100+ packages FOSS
 
+### 🪟 Window Manager
+- **[GLAZEWM_ZEBAR_GUIDE.md](GLAZEWM_ZEBAR_GUIDE.md)** - Guide complet GlazeWM + Zebar
+
 ### 🔧 Projet
 - **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Structure du projet
 - **[COMMIT_PLAN.md](COMMIT_PLAN.md)** - Plan de commits atomiques
