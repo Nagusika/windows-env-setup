@@ -205,38 +205,6 @@ function Install-Docker {
     }
 }
 
-# Function to install Komorebi tiling window manager
-function Install-Komorebi {
-    if (-not (Confirm-Action "Install Komorebi tiling window manager?" $false)) {
-        Write-Log "Komorebi installation skipped by user" "SKIP"
-        return
-    }
-    
-    Write-Host ""
-    Write-Host "Select theme for Komorebi:" -ForegroundColor Cyan
-    Write-Host "  1. Gruvbox (warm, retro)"
-    Write-Host "  2. Tokyo Night (cool, modern)"
-    Write-Host "  3. Catppuccin (pastel, elegant)"
-    Write-Host ""
-    $themeChoice = Read-Host "Enter choice (1-3, default: 1)"
-    
-    $theme = switch ($themeChoice) {
-        "2" { "tokyonight" }
-        "3" { "catppuccin" }
-        default { "gruvbox" }
-    }
-    
-    Write-Log "Installing Komorebi with $theme theme..."
-    try {
-        & ".\scripts\install-komorebi.ps1" -Theme $theme
-        Write-Log "Komorebi installed successfully with $theme theme" "SUCCESS"
-    }
-    catch {
-        Write-Log "Error installing Komorebi: $($_.Exception.Message)" "ERROR"
-        Write-Log "You can retry later by running: .\scripts\install-komorebi.ps1 -Theme $theme" "INFO"
-    }
-}
-
 # Function to install useful packages via winget
 function Install-WingetPackages {
     if (-not (Confirm-Action "Install additional useful packages (CLI tools, browsers, utilities)?" $true)) {
@@ -382,7 +350,6 @@ function Main {
         # Optional installations
         Install-WSL
         Install-Docker
-        Install-Komorebi
         
         # Additional packages
         Install-WingetPackages

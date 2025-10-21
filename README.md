@@ -24,12 +24,6 @@ Automated installation and configuration script for a complete Windows developme
 ### Optional Components
 - **WSL2 + Ubuntu** - Linux Subsystem for Windows
 - **Docker Desktop** - Containerization platform
-- **Komorebi** ⭐ - Tiling window manager with:
-  - Smooth navigation (hold Win key for multiple commands)
-  - Win key menu disabled (no Start Menu popup)
-  - Stack/Move/Navigate shortcuts
-  - 3 themes: Gruvbox, Tokyo Night, Catppuccin
-  - Color-coded borders (focus vs stacked)
 
 ### Additional Packages (100+ tools in 12 categories)
 - Base Shell & UX (PowerShell 7, PowerToys, VSCodium, Flow Launcher...)
@@ -66,12 +60,6 @@ Install Windows Terminal? (Y/n): y
 Install NerdFonts (CascadiaCode, FiraCode)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): n
-Install Komorebi tiling window manager? (y/N): y
-  Select theme:
-    1. Gruvbox (warm, retro)
-    2. Tokyo Night (cool, modern)
-    3. Catppuccin (pastel, elegant)
-  Enter choice (1-3): 1
 Install additional useful packages? (Y/n): y
   Install Base Shell & UX packages? (Y/n): y
   Install CLI Toolbox (FOSS) packages? (Y/n): y
@@ -88,11 +76,6 @@ Install additional useful packages? (Y/n): y
 .\scripts\install-docker.ps1
 .\scripts\install-git.ps1
 .\scripts\install-github-cli.ps1
-
-# Install Komorebi with specific theme
-.\scripts\install-komorebi.ps1 -Theme gruvbox
-.\scripts\install-komorebi.ps1 -Theme tokyonight
-.\scripts\install-komorebi.ps1 -Theme catppuccin
 ```
 
 ## Prerequisites
@@ -114,42 +97,19 @@ windows-env-setup/
 │   ├── install-nerdfonts.ps1
 │   ├── install-docker.ps1
 │   ├── install-git.ps1
-│   ├── install-github-cli.ps1
-│   └── install-komorebi.ps1 # Komorebi tiling window manager
+│   └── install-github-cli.ps1
 ├── config/                  # Configuration files
 │   ├── wsl.conf
 │   └── terminal-settings.json
 ├── logs/                    # Installation logs
 ├── IMPROVEMENTS.md          # Detailed changelog
 ├── PACKAGES.md              # Package reference guide
-├── SUMMARY.md               # Quick overview
-└── KOMOREBI_GUIDE.md        # Komorebi complete guide
+└── SUMMARY.md               # Quick overview
 ```
-
-## 🪟 Komorebi Quick Start
-
-After installation, start Komorebi:
-```powershell
-.\START-KOMOREBI.ps1
-```
-
-**Key Shortcuts:**
-- `Win+H/J/K/L` - Navigate (hold Win for smooth navigation!)
-- `Shift+Win+H/J/K/L` - Move window
-- `Ctrl+Win+H/J/K/L` - Stack window
-- `Win+U` - Unstack
-- `Win+1/2/3/4/5` - Switch workspace
-- `Win+Enter` - Terminal
-- `Win+Q` - Close window
-
-**Note:** Win key alone does NOT open Start Menu!
-
-See **[docs/KOMOREBI_FINAL.md](docs/KOMOREBI_FINAL.md)** for complete guide.
 
 ## 📚 Documentation
 
 - **[docs/README.md](docs/README.md)** ⭐ - Documentation index
-- **[docs/KOMOREBI_FINAL.md](docs/KOMOREBI_FINAL.md)** ⭐ - Complete Komorebi guide
 - **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide for beginners
 - **[SUMMARY.md](SUMMARY.md)** - Quick overview and recommendations
 - **[PACKAGES.md](PACKAGES.md)** - Complete package list with command examples
