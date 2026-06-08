@@ -11,10 +11,10 @@ kitchen sink. Policy-risky tools live in the opt-in **Advanced** tier (see
 |----------|------|-------|
 | **Shell & Terminal** | default | PowerShell 7, Windows Terminal, PowerToys, VSCodium, 7-Zip |
 | **CLI Toolbox** | default | ripgrep, fd, fzf, bat, jq, eza, zoxide, fnm, Starship |
-| **Development** | default | Python, Go, Rust, Node.js |
+| **Development** | default | Python, uv, Go, Rust (rustup), Node.js |
 | **Security / Passwords** | default | KeePassXC, Bitwarden |
 | **Package Managers** | default | Scoop |
-| **Advanced ⚠️** | opt-in | Wireshark, Nmap, Process Hacker, RustDesk, Rufus, Ventoy, VeraCrypt, SSHFS-Win, WinFsp |
+| **Advanced ⚠️** | opt-in | Wireshark, Nmap, System Informer, RustDesk, Rufus, Ventoy, VeraCrypt, SSHFS-Win, WinFsp |
 
 > Git and GitHub CLI are installed by their own scripts, not the package manifest.
 
@@ -33,9 +33,11 @@ z project                       # zoxide - smart cd
 
 ### Development
 ```powershell
+uv --version                    # uv - fast Python package/venv/version manager
+uv venv ; uv pip install ruff   # ...replaces pip + venv + pyenv
 python --version
 go version
-rustc --version ; cargo --version
+rustup show ; cargo --version   # rustup manages the Rust toolchains
 node --version ; npm --version
 fnm install 20 ; fnm use 20     # fnm - Node version manager
 ```

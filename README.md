@@ -32,7 +32,7 @@ Automated installation and configuration script for a Windows development enviro
 ### Additional Packages (a lean set across a few categories)
 - Shell & Terminal (PowerShell 7, Windows Terminal, PowerToys, VSCodium, 7-Zip)
 - CLI Toolbox (ripgrep, fd, fzf, bat, jq, eza, zoxide, fnm, Starship)
-- Development (Python, Go, Rust, Node.js)
+- Development (Python + uv, Go, Rust, Node.js)
 - Security / Passwords (KeePassXC, Bitwarden)
 - Package Managers (Scoop)
 - ⚠️ Advanced — opt-in, may violate IT policy (Wireshark, Nmap, RustDesk, Rufus, Ventoy, VeraCrypt...) — see [SECURITY.md](SECURITY.md)
