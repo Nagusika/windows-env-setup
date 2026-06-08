@@ -1,5 +1,7 @@
-# Requirements for Windows Environment
-# This file lists prerequisites and dependencies
+# System Prerequisites
+
+> Prose reference of what the scripts expect. This is **not** a Python
+> `requirements.txt` — there are no pip dependencies in this PowerShell project.
 
 ## System Prerequisites
 
