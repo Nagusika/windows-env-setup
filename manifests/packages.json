@@ -1,0 +1,136 @@
+{
+  "$schema": "./packages.schema.json",
+  "description": "Declarative package list consumed by install.ps1. tier 'default' is prompted Yes; tier 'advanced' is prompted No and shows an IT-policy warning.",
+  "categories": [
+    {
+      "name": "Base Shell & UX",
+      "tier": "default",
+      "packages": [
+        { "id": "Microsoft.PowerShell", "name": "PowerShell 7" },
+        { "id": "Microsoft.WindowsTerminal", "name": "Windows Terminal" },
+        { "id": "Microsoft.PowerToys", "name": "PowerToys" },
+        { "id": "Flow-Launcher.Flow-Launcher", "name": "Flow Launcher" },
+        { "id": "Notepad++.Notepad++", "name": "Notepad++" },
+        { "id": "VSCodium.VSCodium", "name": "VSCodium" }
+      ]
+    },
+    {
+      "name": "Browsers (FOSS)",
+      "tier": "default",
+      "packages": [
+        { "id": "Mozilla.Firefox", "name": "Firefox" },
+        { "id": "LibreWolf.LibreWolf", "name": "LibreWolf" }
+      ]
+    },
+    {
+      "name": "CLI Toolbox (FOSS)",
+      "tier": "default",
+      "packages": [
+        { "id": "BurntSushi.ripgrep.MSVC", "name": "ripgrep" },
+        { "id": "sharkdp.fd", "name": "fd" },
+        { "id": "junegunn.fzf", "name": "fzf" },
+        { "id": "sharkdp.bat", "name": "bat" },
+        { "id": "jqlang.jq", "name": "jq" },
+        { "id": "eza-community.eza", "name": "eza" },
+        { "id": "ajeetdsouza.zoxide", "name": "zoxide" },
+        { "id": "Schniz.fnm", "name": "fnm (Node version manager)" },
+        { "id": "Starship.Starship", "name": "Starship prompt" }
+      ]
+    },
+    {
+      "name": "Network / Debug / Monitoring",
+      "tier": "default",
+      "packages": [
+        { "id": "ESnet.iperf3", "name": "iperf3" },
+        { "id": "LibreHardwareMonitor.LibreHardwareMonitor", "name": "Libre Hardware Monitor" },
+        { "id": "Rem0o.FanControl", "name": "Fan Control" },
+        { "id": "CrystalDewWorld.CrystalDiskInfo", "name": "CrystalDiskInfo" },
+        { "id": "CrystalDewWorld.CrystalDiskMark", "name": "CrystalDiskMark" }
+      ]
+    },
+    {
+      "name": "Storage / FS / Sync",
+      "tier": "default",
+      "packages": [
+        { "id": "7zip.7zip", "name": "7-Zip" },
+        { "id": "Rclone.Rclone", "name": "Rclone" },
+        { "id": "Syncthing.Syncthing", "name": "Syncthing" }
+      ]
+    },
+    {
+      "name": "Backups (FOSS)",
+      "tier": "default",
+      "packages": [
+        { "id": "restic.restic", "name": "restic" },
+        { "id": "kopia.kopia", "name": "Kopia" },
+        { "id": "Duplicati.Duplicati", "name": "Duplicati" }
+      ]
+    },
+    {
+      "name": "PDF / Images / Notes",
+      "tier": "default",
+      "packages": [
+        { "id": "SumatraPDF.SumatraPDF", "name": "Sumatra PDF" },
+        { "id": "PDFsam.PDFsam", "name": "PDFsam" },
+        { "id": "ImageGlass.ImageGlass", "name": "ImageGlass" },
+        { "id": "GIMP.GIMP", "name": "GIMP" },
+        { "id": "Inkscape.Inkscape", "name": "Inkscape" },
+        { "id": "Joplin.Joplin", "name": "Joplin" },
+        { "id": "Obsidian.Obsidian", "name": "Obsidian" }
+      ]
+    },
+    {
+      "name": "Media (FOSS)",
+      "tier": "default",
+      "packages": [
+        { "id": "VideoLAN.VLC", "name": "VLC" },
+        { "id": "mpv.net", "name": "mpv.net" },
+        { "id": "Audacity.Audacity", "name": "Audacity" },
+        { "id": "OBSProject.OBSStudio", "name": "OBS Studio" }
+      ]
+    },
+    {
+      "name": "Security / Privacy / Passwords",
+      "tier": "default",
+      "packages": [
+        { "id": "KeePassXCTeam.KeePassXC", "name": "KeePassXC" },
+        { "id": "Bitwarden.Bitwarden", "name": "Bitwarden" }
+      ]
+    },
+    {
+      "name": "Development Tools",
+      "tier": "default",
+      "packages": [
+        { "id": "Python.Python.3.12", "name": "Python 3.12" },
+        { "id": "GoLang.Go", "name": "Go" },
+        { "id": "Rustlang.Rust.MSVC", "name": "Rust" },
+        { "id": "OpenJS.NodeJS", "name": "Node.js" },
+        { "id": "JetBrains.Toolbox", "name": "JetBrains Toolbox" },
+        { "id": "Postman.Postman", "name": "Postman" },
+        { "id": "Insomnia.Insomnia", "name": "Insomnia" }
+      ]
+    },
+    {
+      "name": "Package Managers",
+      "tier": "default",
+      "packages": [
+        { "id": "ScoopInstaller.Scoop", "name": "Scoop" }
+      ]
+    },
+    {
+      "name": "Advanced - may violate IT policy",
+      "tier": "advanced",
+      "packages": [
+        { "id": "WiresharkFoundation.Wireshark", "name": "Wireshark (network sniffer)" },
+        { "id": "Insecure.Nmap", "name": "Nmap (port scanner)" },
+        { "id": "ProcessHacker.ProcessHacker", "name": "Process Hacker / System Informer" },
+        { "id": "RustDesk.RustDesk", "name": "RustDesk (unmanaged remote access)" },
+        { "id": "Rufus.Rufus", "name": "Rufus (bootable USB creator)" },
+        { "id": "Ventoy.Ventoy", "name": "Ventoy (bootable USB creator)" },
+        { "id": "VeraCrypt.VeraCrypt", "name": "VeraCrypt (encrypted containers)" },
+        { "id": "SSHFS-Win.SSHFS-Win", "name": "SSHFS-Win (remote filesystem mount)" },
+        { "id": "WinFsp.WinFsp", "name": "WinFsp (user-mode filesystem driver)" }
+      ]
+    }
+  ]
+}

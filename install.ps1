@@ -1,76 +1,30 @@
-# Main Windows environment installation script
-# Run as administrator
+#Requires -Version 5.1
+#Requires -RunAsAdministrator
+
+# Main Windows environment installation script. Run from an elevated PowerShell.
 
 param(
     [switch]$Verbose
 )
 
-# Configuration
 $ErrorActionPreference = "Stop"
-$LogDir = "logs"
-$ConfigDir = "config"
+$LogDir = Join-Path $PSScriptRoot 'logs'
 
-# Create necessary directories
-if (!(Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force }
-if (!(Test-Path $ConfigDir)) { New-Item -ItemType Directory -Path $ConfigDir -Force }
-
-# Logging function
-function Write-Log {
-    param($Message, $Level = "INFO")
-    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $LogMessage = "[$Timestamp] [$Level] $Message"
-    
-    $Color = switch ($Level) {
-        "SUCCESS" { "Green" }
-        "ERROR" { "Red" }
-        "WARN" { "Yellow" }
-        "SKIP" { "Cyan" }
-        default { "White" }
-    }
-    
-    Write-Host $LogMessage -ForegroundColor $Color
-    Add-Content -Path "$LogDir\install.log" -Value $LogMessage
-}
-
-# Function to prompt user for confirmation
-function Confirm-Action {
-    param(
-        [string]$Message,
-        [bool]$DefaultYes = $false
-    )
-    
-    $Prompt = if ($DefaultYes) { "$Message (Y/n)" } else { "$Message (y/N)" }
-    $Response = Read-Host $Prompt
-    
-    if ([string]::IsNullOrWhiteSpace($Response)) {
-        return $DefaultYes
-    }
-    
-    return $Response -match '^[Yy]'
-}
+# Shared helpers (logging, prompts, honest native-exit handling).
+Import-Module (Join-Path $PSScriptRoot 'WinEnvSetup.psm1') -Force
+Initialize-Log -LogFile (Join-Path $LogDir 'install.log')
 
 # Function to check prerequisites
 function Test-Prerequisites {
     Write-Log "Checking prerequisites..."
-    
-    # Check Windows version
+
     $OSVersion = [System.Environment]::OSVersion.Version
     if ($OSVersion.Major -lt 10) {
         throw "Windows 10 or higher required"
     }
-    
-    # Check PowerShell
-    if ($PSVersionTable.PSVersion.Major -lt 5) {
-        throw "PowerShell 5.1 or higher required"
-    }
-    
-    # Check administrator rights
-    $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $Principal = New-Object Security.Principal.WindowsPrincipal($CurrentUser)
-    if (-not $Principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        throw "Administrator rights required"
-    }
-    
+
+    # PowerShell version and administrator rights are enforced by the #Requires
+    # directives at the top of this script, so they fail fast before any side effect.
     Write-Log "Prerequisites validated" "SUCCESS"
 }
 
@@ -247,139 +201,38 @@ function Install-WingetPackages {
         Write-Log "Additional packages installation skipped by user" "SKIP"
         return
     }
-    
-    Write-Log "Installing additional packages via winget..."
-    
-    # Define package categories
-    $Packages = @{
-        "Base Shell & UX" = @(
-            @{Id="Microsoft.PowerShell"; Name="PowerShell 7"},
-            @{Id="Microsoft.WindowsTerminal"; Name="Windows Terminal"},
-            @{Id="Microsoft.PowerToys"; Name="PowerToys"},
-            @{Id="Flow-Launcher.Flow-Launcher"; Name="Flow Launcher"},
-            @{Id="Notepad++.Notepad++"; Name="Notepad++"},
-            @{Id="VSCodium.VSCodium"; Name="VSCodium"}
-        )
-        "Browsers (FOSS)" = @(
-            @{Id="Mozilla.Firefox"; Name="Firefox"},
-            @{Id="LibreWolf.LibreWolf"; Name="LibreWolf"}
-        )
-        "CLI Toolbox (FOSS)" = @(
-            @{Id="BurntSushi.ripgrep.MSVC"; Name="ripgrep"},
-            @{Id="sharkdp.fd"; Name="fd"},
-            @{Id="junegunn.fzf"; Name="fzf"},
-            @{Id="sharkdp.bat"; Name="bat"},
-            @{Id="jqlang.jq"; Name="jq"},
-            @{Id="eza-community.eza"; Name="eza"},
-            @{Id="ajeetdsouza.zoxide"; Name="zoxide"},
-            @{Id="Schniz.fnm"; Name="fnm (Node version manager)"},
-            @{Id="Starship.Starship"; Name="Starship prompt"}
-        )
-        "Network / Debug / Monitoring" = @(
-            @{Id="ESnet.iperf3"; Name="iperf3"},
-            @{Id="LibreHardwareMonitor.LibreHardwareMonitor"; Name="Libre Hardware Monitor"},
-            @{Id="Rem0o.FanControl"; Name="Fan Control"},
-            @{Id="CrystalDewWorld.CrystalDiskInfo"; Name="CrystalDiskInfo"},
-            @{Id="CrystalDewWorld.CrystalDiskMark"; Name="CrystalDiskMark"}
-        )
-        "Storage / FS / Sync" = @(
-            @{Id="7zip.7zip"; Name="7-Zip"},
-            @{Id="Rclone.Rclone"; Name="Rclone"},
-            @{Id="Syncthing.Syncthing"; Name="Syncthing"}
-        )
-        "Backups (FOSS)" = @(
-            @{Id="restic.restic"; Name="restic"},
-            @{Id="kopia.kopia"; Name="Kopia"},
-            @{Id="Duplicati.Duplicati"; Name="Duplicati"}
-        )
-        "PDF / Images / Notes" = @(
-            @{Id="SumatraPDF.SumatraPDF"; Name="Sumatra PDF"},
-            @{Id="PDFsam.PDFsam"; Name="PDFsam"},
-            @{Id="ImageGlass.ImageGlass"; Name="ImageGlass"},
-            @{Id="GIMP.GIMP"; Name="GIMP"},
-            @{Id="Inkscape.Inkscape"; Name="Inkscape"},
-            @{Id="Joplin.Joplin"; Name="Joplin"},
-            @{Id="Obsidian.Obsidian"; Name="Obsidian"}
-        )
-        "Media (FOSS)" = @(
-            @{Id="VideoLAN.VLC"; Name="VLC"},
-            @{Id="mpv.net"; Name="mpv.net"},
-            @{Id="Audacity.Audacity"; Name="Audacity"},
-            @{Id="OBSProject.OBSStudio"; Name="OBS Studio"}
-        )
-        "Security / Privacy / Passwords" = @(
-            @{Id="KeePassXCTeam.KeePassXC"; Name="KeePassXC"},
-            @{Id="Bitwarden.Bitwarden"; Name="Bitwarden"}
-        )
-        "Development Tools" = @(
-            @{Id="Python.Python.3.12"; Name="Python 3.12"},
-            @{Id="GoLang.Go"; Name="Go"},
-            @{Id="Rustlang.Rust.MSVC"; Name="Rust"},
-            @{Id="OpenJS.NodeJS"; Name="Node.js"},
-            @{Id="JetBrains.Toolbox"; Name="JetBrains Toolbox"},
-            @{Id="Postman.Postman"; Name="Postman"},
-            @{Id="Insomnia.Insomnia"; Name="Insomnia"}
-        )
-        "Package Managers" = @(
-            @{Id="ScoopInstaller.Scoop"; Name="Scoop"}
-        )
+
+    $ManifestPath = Join-Path $PSScriptRoot 'manifests\packages.json'
+    if (-not (Test-Path $ManifestPath)) {
+        Write-Log "Package manifest not found: $ManifestPath" "ERROR"
+        return
     }
-    
-    # Ask for each category
-    foreach ($Category in $Packages.Keys) {
+
+    Write-Log "Installing additional packages from manifest..."
+    $Manifest = Get-Content -Path $ManifestPath -Raw | ConvertFrom-Json
+
+    foreach ($Category in $Manifest.categories) {
         Write-Host ""
-        if (Confirm-Action "Install $Category packages?" $true) {
-            foreach ($Package in $Packages[$Category]) {
-                try {
-                    Write-Log "Installing $($Package.Name)..."
-                    winget install -e --id $($Package.Id) --silent --accept-package-agreements --accept-source-agreements
-                    Write-Log "$($Package.Name) installed" "SUCCESS"
-                }
-                catch {
-                    Write-Log "Failed to install $($Package.Name): $($_.Exception.Message)" "WARN"
-                }
+        $IsAdvanced = $Category.tier -eq 'advanced'
+
+        if ($IsAdvanced) {
+            Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
+            Write-Host "  ADVANCED TOOLS - may violate your employer's IT/security policy"   -ForegroundColor Yellow
+            Write-Host "  Network sniffers, remote access, bootable-media and encryption"     -ForegroundColor Yellow
+            Write-Host "  tools can trigger EDR/DLP alerts. See SECURITY.md. You install"      -ForegroundColor Yellow
+            Write-Host "  these at your own responsibility."                                   -ForegroundColor Yellow
+            Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
+        }
+
+        $DefaultYes = -not $IsAdvanced
+        if (Confirm-Action "Install '$($Category.name)' packages?" $DefaultYes) {
+            foreach ($Package in $Category.packages) {
+                [void](Install-WingetPackage -Id $Package.id -Name $Package.name)
             }
         }
         else {
-            Write-Log "$Category packages skipped" "SKIP"
+            Write-Log "$($Category.name) packages skipped" "SKIP"
         }
-    }
-    
-    # Advanced / policy-risky tools - opt-in, default NO, with an explicit warning.
-    # These commonly trigger corporate EDR/DLP or violate acceptable-use policy.
-    $AdvancedPackages = @(
-        @{Id="WiresharkFoundation.Wireshark"; Name="Wireshark (network sniffer)"},
-        @{Id="Insecure.Nmap"; Name="Nmap (port scanner)"},
-        @{Id="ProcessHacker.ProcessHacker"; Name="Process Hacker / System Informer"},
-        @{Id="RustDesk.RustDesk"; Name="RustDesk (unmanaged remote access)"},
-        @{Id="Rufus.Rufus"; Name="Rufus (bootable USB creator)"},
-        @{Id="Ventoy.Ventoy"; Name="Ventoy (bootable USB creator)"},
-        @{Id="VeraCrypt.VeraCrypt"; Name="VeraCrypt (encrypted containers)"},
-        @{Id="SSHFS-Win.SSHFS-Win"; Name="SSHFS-Win (remote filesystem mount)"},
-        @{Id="WinFsp.WinFsp"; Name="WinFsp (user-mode filesystem driver)"}
-    )
-
-    Write-Host ""
-    Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
-    Write-Host "  ADVANCED TOOLS - may violate your employer's IT/security policy"   -ForegroundColor Yellow
-    Write-Host "  Network sniffers, remote access, bootable-media and encryption"     -ForegroundColor Yellow
-    Write-Host "  tools can trigger EDR/DLP alerts. See SECURITY.md. You install"      -ForegroundColor Yellow
-    Write-Host "  these at your own responsibility."                                   -ForegroundColor Yellow
-    Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
-    if (Confirm-Action "Install ADVANCED tools (may violate IT policy)?" $false) {
-        foreach ($Package in $AdvancedPackages) {
-            try {
-                Write-Log "Installing $($Package.Name)..."
-                winget install -e --id $($Package.Id) --silent --accept-package-agreements --accept-source-agreements
-                Write-Log "$($Package.Name) installed" "SUCCESS"
-            }
-            catch {
-                Write-Log "Failed to install $($Package.Name): $($_.Exception.Message)" "WARN"
-            }
-        }
-    }
-    else {
-        Write-Log "Advanced (policy-risky) tools skipped" "SKIP"
     }
 
     Write-Log "Additional packages installation completed" "SUCCESS"
