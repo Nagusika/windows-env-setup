@@ -226,10 +226,10 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 1. **Check the logs**: `logs\install.log`
 2. **Read the docs**: 
-   - [README.md](README.md) - Main documentation
+   - [README.md](README.md) - Documentation index
    - [PACKAGES.md](PACKAGES.md) - Package reference
-   - [SUMMARY.md](SUMMARY.md) - Quick overview
-   - [IMPROVEMENTS.md](IMPROVEMENTS.md) - Detailed changes
+   - [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) - Project structure
+   - [PREREQUISITES.md](PREREQUISITES.md) - System prerequisites
 3. **Try individual scripts**: `.\scripts\install-<component>.ps1`
 4. **Search winget**: `winget search <package-name>`
 
@@ -277,6 +277,6 @@ Your Windows development environment is now set up with:
 - ✅ Tiling Window Manager (GlazeWM + Zebar) - optional
 - ✅ Linux subsystem (WSL) - optional
 - ✅ Containerization (Docker) - optional
-- ✅ 100+ useful tools - optional
+- ✅ 50+ useful tools - optional
 
 **Enjoy your new setup!** 🚀

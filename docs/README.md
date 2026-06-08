@@ -6,17 +6,14 @@
 - **[QUICK_START.md](QUICK_START.md)** - Guide de démarrage rapide (5 min)
 
 ### 📦 Packages
-- **[PACKAGES.md](PACKAGES.md)** - Liste des 100+ packages FOSS
+- **[PACKAGES.md](PACKAGES.md)** - Liste des 50+ packages FOSS
 
 ### 🪟 Window Manager
 - **[GLAZEWM_ZEBAR_GUIDE.md](GLAZEWM_ZEBAR_GUIDE.md)** - Guide complet GlazeWM + Zebar
 
 ### 🔧 Projet
 - **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Structure du projet
-- **[COMMIT_PLAN.md](COMMIT_PLAN.md)** - Plan de commits atomiques
-
-### 📁 Archive
-Documentation détaillée archivée dans **[archive/](archive/)** (11 guides)
+- **[Audit & Plan](audit/README.md)** - Revue multi-experts et feuille de route
 
 ## 🔧 Structure du Projet
 

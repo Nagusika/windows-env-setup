@@ -1,14 +1,14 @@
 # Windows Environment Setup
 
-Automated installation and configuration script for a complete Windows development environment with **100+ useful FOSS tools**.
+Automated installation and configuration script for a complete Windows development environment with a curated set of **50+ FOSS tools** — built to work on a company-managed laptop without tripping your IT policy.
 
 ## ✨ Features
 
 - 🎯 **Interactive Installation** - Y/N prompts for each component
-- 📦 **100+ Packages** - Comprehensive collection of FOSS tools
+- 📦 **50+ Packages** - Curated collection of FOSS tools
 - 🎨 **Color-coded Feedback** - Clear visual progress indicators
 - 🔧 **Flexible** - Choose exactly what you want to install
-- 🛡️ **Safe** - All packages from verified sources via winget
+- 🛡️ **Corporate-safe by default** - Installed from winget's verified sources; policy-risky tools are opt-in only (⚠️ see [SECURITY.md](SECURITY.md))
 - 📝 **Detailed Logging** - Track everything in log files
 - 🚀 **Non-destructive** - Won't overwrite existing installations
 
@@ -29,25 +29,24 @@ Automated installation and configuration script for a complete Windows developme
 - **WSL2 + Ubuntu** - Linux Subsystem for Windows
 - **Docker Desktop** - Containerization platform
 
-### Additional Packages (100+ tools in 12 categories)
+### Additional Packages (50+ tools across categories)
 - Base Shell & UX (PowerShell 7, PowerToys, VSCodium, Flow Launcher...)
 - Browsers (Firefox, LibreWolf)
 - CLI Toolbox (ripgrep, fd, fzf, bat, jq, eza, zoxide, Starship...)
-- Network/Debug/Monitoring (Wireshark, Nmap, Process Hacker...)
-- Storage/Sync (7-Zip, Rclone, Syncthing...)
+- Network/Debug/Monitoring (iperf3, CrystalDiskInfo, Fan Control...)
+- Storage/Sync (7-Zip, Rclone, Syncthing)
 - Backups (restic, Kopia, Duplicati)
 - PDF/Images/Notes (GIMP, Inkscape, Joplin, Obsidian...)
 - Media (VLC, mpv.net, Audacity, OBS Studio)
-- Remote/P2P (RustDesk, qBittorrent)
-- Security/Privacy (KeePassXC, Bitwarden, VeraCrypt)
-- Boot Tools (Rufus, Ventoy)
+- Security/Privacy (KeePassXC, Bitwarden)
 - Development Tools (Python, Go, Rust, Node.js...)
+- ⚠️ Advanced — opt-in, may violate IT policy (Wireshark, Nmap, RustDesk, Rufus, Ventoy, VeraCrypt...) — see [SECURITY.md](SECURITY.md)
 
-See [PACKAGES.md](PACKAGES.md) for complete list and usage examples.
+See [PACKAGES.md](docs/PACKAGES.md) for complete list and usage examples.
 
 ## 🚀 Quick Start
 
-> **New to this?** Check out the [Quick Start Guide](QUICK_START.md) for step-by-step instructions!
+> **New to this?** Check out the [Quick Start Guide](docs/QUICK_START.md) for step-by-step instructions!
 
 ### Complete Installation (Recommended)
 ```powershell
@@ -114,10 +113,11 @@ windows-env-setup/
 │   ├── glazewm-config.yaml
 │   ├── zebar-with-glazewm.html
 │   └── styles_gruvbox.css
-├── logs/                    # Installation logs
-├── IMPROVEMENTS.md          # Detailed changelog
-├── PACKAGES.md              # Package reference guide
-└── SUMMARY.md               # Quick overview
+├── logs/                    # Installation logs (gitignored)
+├── docs/                    # Documentation (see docs/README.md)
+├── LICENSE                  # MIT License
+├── SECURITY.md              # Corporate policy disclaimer + reporting
+└── CONTRIBUTING.md          # Development setup
 ```
 
 ## 📚 Documentation
@@ -146,30 +146,8 @@ winget uninstall --id PackageId
 
 ## Development
 
-This project uses `pre-commit` to enforce code quality and consistency. To set up your local environment, follow these steps:
-
-1.  **Install pre-commit**:
-
-    If you have Python installed, you can install `pre-commit` using pip:
-    ```bash
-    pip install pre-commit
-    ```
-
-2.  **Install PSScriptAnalyzer**:
-
-    The PowerShell hook requires the `PSScriptAnalyzer` module. Open a PowerShell terminal as an administrator and run:
-    ```powershell
-    Install-Module -Name PSScriptAnalyzer -Force -SkipPublisherCheck
-    ```
-
-3.  **Install the Git Hooks**:
-
-    In the root of the repository, run:
-    ```bash
-    pre-commit install
-    ```
-
-Now, `pre-commit` will run automatically on every `git commit`.
+Contributor setup (pre-commit, PSScriptAnalyzer, commit conventions) lives in
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📝 Notes
 
@@ -259,4 +237,4 @@ Contributions are welcome! Feel free to:
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
+This project is open source and available under the [MIT License](LICENSE).
