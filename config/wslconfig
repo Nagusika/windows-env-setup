@@ -1,0 +1,27 @@
+# Global WSL2 settings - deployed to %USERPROFILE%\.wslconfig
+# Docs: https://learn.microsoft.com/windows/wsl/wsl-config
+
+[wsl2]
+# --- Corporate networking (Windows 11 22H2+) ---
+# Share the Windows network stack so VPN, localhost (both directions) and the
+# corporate proxy "just work" inside WSL. This is the single biggest fix for
+# "WSL networking is broken on my work machine".
+networkingMode=mirrored
+# Resolve DNS through the Windows resolver - fixes broken DNS behind a VPN.
+dnsTunneling=true
+# Inherit the Windows HTTP/HTTPS proxy so apt / curl work behind a corp proxy.
+autoProxy=true
+# Apply the Windows firewall (Hyper-V firewall) to WSL traffic.
+firewall=true
+
+# Resource caps are left at WSL defaults (≈50% of RAM, all CPUs). Uncomment to
+# cap them on a small machine:
+# memory=8GB
+# processors=4
+# swap=2GB
+
+[experimental]
+# Give idle memory back to Windows instead of vmmem hogging all your RAM.
+autoMemoryReclaim=gradual
+# Automatically shrink the WSL virtual disk as you delete files.
+sparseVhd=true

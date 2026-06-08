@@ -1,0 +1,85 @@
+# Shared Starship prompt - deployed to ~/.config/starship.toml on both Windows
+# (PowerShell) and WSL so the prompt looks identical everywhere. Gruvbox palette
+# to match the GlazeWM / Zebar desktop theme.
+# Requires a Nerd Font (installed by this project) for the icons.
+
+add_newline = true
+
+format = """
+[](fg:#458588)\
+$os\
+$directory\
+[](fg:#458588 bg:#98971a)\
+$git_branch$git_status\
+[](fg:#98971a bg:#d79921)\
+$python$nodejs$rust$golang\
+[](fg:#d79921)\
+$fill\
+$cmd_duration\
+$line_break\
+$character"""
+
+palette = "gruvbox"
+
+[palettes.gruvbox]
+bg0 = "#282828"
+blue = "#458588"
+green = "#98971a"
+yellow = "#d79921"
+fg = "#ebdbb2"
+
+[os]
+disabled = false
+style = "bg:#458588 fg:#282828"
+
+[os.symbols]
+Windows = " "
+Ubuntu = " "
+Linux = " "
+
+[directory]
+style = "bg:#458588 fg:#282828"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+style = "bg:#98971a fg:#282828"
+format = "[ $symbol$branch ]($style)"
+symbol = " "
+
+[git_status]
+style = "bg:#98971a fg:#282828"
+format = "[$all_status$ahead_behind ]($style)"
+
+[python]
+style = "bg:#d79921 fg:#282828"
+format = "[ $symbol$version ]($style)"
+symbol = " "
+
+[nodejs]
+style = "bg:#d79921 fg:#282828"
+format = "[ $symbol$version ]($style)"
+symbol = " "
+
+[rust]
+style = "bg:#d79921 fg:#282828"
+format = "[ $symbol$version ]($style)"
+symbol = " "
+
+[golang]
+style = "bg:#d79921 fg:#282828"
+format = "[ $symbol$version ]($style)"
+symbol = " "
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 500
+style = "fg:#d79921"
+format = "[ took $duration ]($style)"
+
+[character]
+success_symbol = "[](bold #98971a)"
+error_symbol = "[](bold #cc241d)"
