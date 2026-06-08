@@ -32,9 +32,10 @@
       "name": "Development",
       "tier": "default",
       "packages": [
-        { "id": "Python.Python.3.12", "name": "Python 3.12" },
+        { "id": "Python.Python.3.13", "name": "Python 3.13" },
+        { "id": "astral-sh.uv", "name": "uv (Python package manager)" },
         { "id": "GoLang.Go", "name": "Go" },
-        { "id": "Rustlang.Rust.MSVC", "name": "Rust" },
+        { "id": "Rustlang.Rustup", "name": "Rust (rustup)" },
         { "id": "OpenJS.NodeJS", "name": "Node.js" }
       ]
     },
@@ -59,7 +60,7 @@
       "packages": [
         { "id": "WiresharkFoundation.Wireshark", "name": "Wireshark (network sniffer)" },
         { "id": "Insecure.Nmap", "name": "Nmap (port scanner)" },
-        { "id": "ProcessHacker.ProcessHacker", "name": "Process Hacker / System Informer" },
+        { "id": "WinsiderSS.SystemInformer", "name": "System Informer (process inspector)" },
         { "id": "RustDesk.RustDesk", "name": "RustDesk (unmanaged remote access)" },
         { "id": "Rufus.Rufus", "name": "Rufus (bootable USB creator)" },
         { "id": "Ventoy.Ventoy", "name": "Ventoy (bootable USB creator)" },

@@ -31,7 +31,7 @@ Describe 'packages manifest' {
 
     It 'keeps policy-risky tools out of the default tiers' {
         $risky = @(
-            'WiresharkFoundation.Wireshark', 'Insecure.Nmap', 'ProcessHacker.ProcessHacker',
+            'WiresharkFoundation.Wireshark', 'Insecure.Nmap', 'WinsiderSS.SystemInformer',
             'RustDesk.RustDesk', 'Rufus.Rufus', 'Ventoy.Ventoy'
         )
         foreach ($cat in $categories) {
