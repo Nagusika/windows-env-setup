@@ -71,9 +71,9 @@ function Set-WindowsTerminalConfiguration {
             "defaultProfile" = "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}"
             "profiles"       = @{
                 "defaults" = @{
-                    "fontFace"       = "Cascadia Code"
+                    "fontFace"       = "CaskaydiaCove Nerd Font"
                     "fontSize"       = 12
-                    "colorScheme"    = "Campbell"
+                    "colorScheme"    = "Gruvbox Dark"
                     "cursorShape"    = "bar"
                     "cursorHeight"   = 1
                     "snapOnInput"    = $true
@@ -107,27 +107,27 @@ function Set-WindowsTerminalConfiguration {
             }
             "schemes"        = @(
                 @{
-                    "name"                = "Campbell"
-                    "foreground"          = "#F2F2F2"
-                    "background"          = "#0C0C0C"
-                    "cursorColor"         = "#F2F2F2"
-                    "selectionBackground" = "#FFFFFF"
-                    "black"               = "#0C0C0C"
-                    "red"                 = "#C50F1F"
-                    "green"               = "#13A10E"
-                    "yellow"              = "#C19C00"
-                    "blue"                = "#0037DA"
-                    "purple"              = "#881798"
-                    "cyan"                = "#3A96DD"
-                    "white"               = "#CCCCCC"
-                    "brightBlack"         = "#767676"
-                    "brightRed"           = "#E74856"
-                    "brightGreen"         = "#16C60C"
-                    "brightYellow"        = "#F9F1A5"
-                    "brightBlue"          = "#3B78FF"
-                    "brightPurple"        = "#B4009E"
-                    "brightCyan"          = "#61D6D6"
-                    "brightWhite"         = "#F2F2F2"
+                    "name"                = "Gruvbox Dark"
+                    "foreground"          = "#ebdbb2"
+                    "background"          = "#282828"
+                    "cursorColor"         = "#ebdbb2"
+                    "selectionBackground" = "#504945"
+                    "black"               = "#282828"
+                    "red"                 = "#cc241d"
+                    "green"               = "#98971a"
+                    "yellow"              = "#d79921"
+                    "blue"                = "#458588"
+                    "purple"              = "#b16286"
+                    "cyan"                = "#689d6a"
+                    "white"               = "#a89984"
+                    "brightBlack"         = "#928374"
+                    "brightRed"           = "#fb4934"
+                    "brightGreen"         = "#b8bb26"
+                    "brightYellow"        = "#fabd2f"
+                    "brightBlue"          = "#83a598"
+                    "brightPurple"        = "#d3869b"
+                    "brightCyan"          = "#8ec07c"
+                    "brightWhite"         = "#ebdbb2"
                 }
             )
             "keybindings"    = @(
@@ -168,6 +168,46 @@ function Set-WindowsTerminalAsDefault {
     }
 }
 
+function Set-WindowsShellTheme {
+    Write-Log "Setting up the PowerShell shell theme (Starship + zoxide)..."
+    try {
+        # Deploy the shared Starship config (used by both PowerShell and WSL).
+        $cfgDir = Join-Path $env:USERPROFILE '.config'
+        if (!(Test-Path $cfgDir)) { New-Item -ItemType Directory -Path $cfgDir -Force | Out-Null }
+        $src = Join-Path $PSScriptRoot '..\config\starship.toml'
+        if (Test-Path $src) {
+            Copy-Item -Path $src -Destination (Join-Path $cfgDir 'starship.toml') -Force
+        }
+
+        # Wire Starship + zoxide into both PowerShell profiles (idempotent, runtime-guarded).
+        $marker = '# >>> windows-env-setup >>>'
+        $block = @'
+
+# >>> windows-env-setup >>>
+if (Get-Command starship -ErrorAction SilentlyContinue) { Invoke-Expression (&starship init powershell) }
+if (Get-Command zoxide   -ErrorAction SilentlyContinue) { Invoke-Expression (& { (zoxide init powershell | Out-String) }) }
+Set-Alias -Name ls  -Value eza -ErrorAction SilentlyContinue
+Set-Alias -Name cat -Value bat -ErrorAction SilentlyContinue
+# <<< windows-env-setup <<<
+'@
+        $profiles = @(
+            (Join-Path $env:USERPROFILE 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'),
+            (Join-Path $env:USERPROFILE 'Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1')
+        )
+        foreach ($profilePath in $profiles) {
+            $dir = Split-Path $profilePath -Parent
+            if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+            if (-not (Test-Path $profilePath) -or -not (Select-String -Path $profilePath -SimpleMatch $marker -Quiet)) {
+                Add-Content -Path $profilePath -Value $block
+            }
+        }
+        Write-Log "PowerShell profiles configured (Starship + zoxide)" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error setting up shell theme: $($_.Exception.Message)" "ERROR"
+    }
+}
+
 function Main {
     Write-Log "=== Windows Terminal Installation ==="
 
@@ -175,6 +215,7 @@ function Main {
         Write-Log "Windows Terminal is already installed" "INFO"
         Set-WindowsTerminalConfiguration
         Set-WindowsTerminalAsDefault
+        Set-WindowsShellTheme
         return
     }
 
@@ -200,6 +241,7 @@ function Main {
 
         Set-WindowsTerminalConfiguration
         Set-WindowsTerminalAsDefault
+        Set-WindowsShellTheme
 
         Write-Log "Windows Terminal installed and configured successfully" "SUCCESS"
     }

@@ -12,6 +12,8 @@ $ErrorActionPreference = "Stop"
 Import-Module (Join-Path $PSScriptRoot '..\WinEnvSetup.psm1') -Force
 Initialize-Log -LogFile (Join-Path $PSScriptRoot '..\logs\wsl.log')
 
+$ConfigDir = Join-Path $PSScriptRoot '..\config'
+
 function Test-FeatureEnabled {
     param([string]$Name)
     $f = Get-WindowsOptionalFeature -Online -FeatureName $Name -ErrorAction SilentlyContinue
@@ -69,65 +71,68 @@ function Install-UbuntuLatest {
     Write-Log "Ubuntu installation requested" "SUCCESS"
 }
 
-function Set-UbuntuConfiguration {
-    Write-Log "Configuring WSL / Ubuntu..."
-
-    # 1) Windows-side global config (.wslconfig), written without a BOM.
-    $wslConfig = @"
-[wsl2]
-memory=4GB
-processors=2
-swap=2GB
-localhostForwarding=true
-"@ -replace "`r`n", "`n"
-    [System.IO.File]::WriteAllText("$env:USERPROFILE\.wslconfig", $wslConfig)
-    Write-Log "Wrote $env:USERPROFILE\.wslconfig" "SUCCESS"
-
-    # 2) Distro-side /etc/wsl.conf - ACTUALLY deployed into the distro (LF, no BOM).
-    $distro = Get-WslDistro
-    if (-not $distro) {
-        Write-Log "No Ubuntu distro found; skipping /etc/wsl.conf deployment" "WARN"
-        return
-    }
-
-    $wslConf = @"
-[boot]
-systemd=true
-
-[network]
-generateHosts = true
-generateResolvConf = true
-
-[interop]
-enabled = true
-appendWindowsPath = true
-"@ -replace "`r`n", "`n"
-
-    $tmp = Join-Path $env:TEMP 'wsl.conf'
-    [System.IO.File]::WriteAllText($tmp, $wslConf)
-    $tmpWslPath = (wsl -d $distro -e wslpath -u $tmp 2>$null)
-    $tmpWslPath = ($tmpWslPath -replace "`0", "").Trim()
-
-    wsl -d $distro -u root -e cp $tmpWslPath /etc/wsl.conf
-    if ($LASTEXITCODE -ne 0) {
-        Write-Log "Failed to deploy /etc/wsl.conf (exit $LASTEXITCODE)" "WARN"
-    }
-    else {
-        Write-Log "Deployed /etc/wsl.conf into $distro" "SUCCESS"
-    }
+# Copy a repo text file into WSL, normalising to LF without a BOM first so the
+# file is valid for Linux consumers regardless of git's checkout line endings.
+function Copy-UnixTextIntoWsl {
+    param(
+        [string]$Distro,
+        [string]$LocalPath,
+        [string]$DestPath,
+        [switch]$AsRoot
+    )
+    $content = (Get-Content -Path $LocalPath -Raw) -replace "`r`n", "`n"
+    $tmp = Join-Path $env:TEMP ([System.IO.Path]::GetFileName($DestPath))
+    [System.IO.File]::WriteAllText($tmp, $content)
+    if ($AsRoot) { Copy-IntoWsl -Distro $Distro -LocalPath $tmp -DestPath $DestPath -AsRoot }
+    else { Copy-IntoWsl -Distro $Distro -LocalPath $tmp -DestPath $DestPath }
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+}
+
+function Set-WslConfiguration {
+    Write-Log "Deploying WSL configuration..."
+
+    # Windows-side global config: corporate networking (mirrored / dnsTunneling /
+    # autoProxy) + idle memory reclaim. Plain copy (Windows-side file).
+    $globalSrc = Join-Path $ConfigDir 'wslconfig'
+    if (Test-Path $globalSrc) {
+        Copy-Item -Path $globalSrc -Destination "$env:USERPROFILE\.wslconfig" -Force
+        Write-Log "Deployed .wslconfig (mirrored networking, dnsTunneling, autoProxy, memory reclaim)" "SUCCESS"
+    }
+
+    # Distro-side /etc/wsl.conf: systemd, appendWindowsPath=false, automount metadata.
+    $distro = Get-WslDistro
+    if (-not $distro) { Write-Log "No Ubuntu distro found; skipping /etc/wsl.conf" "WARN"; return }
+
+    $distroSrc = Join-Path $ConfigDir 'wsl.conf'
+    if (Test-Path $distroSrc) {
+        try {
+            Copy-UnixTextIntoWsl -Distro $distro -LocalPath $distroSrc -DestPath '/etc/wsl.conf' -AsRoot
+            Write-Log "Deployed /etc/wsl.conf into $distro" "SUCCESS"
+        }
+        catch { Write-Log "Could not deploy /etc/wsl.conf: $($_.Exception.Message)" "WARN" }
+    }
     wsl --terminate $distro 2>$null | Out-Null
 }
 
-function Update-UbuntuPackage {
-    Write-Log "Updating Ubuntu packages..."
+function Initialize-DistroEnvironment {
+    Write-Log "Provisioning the WSL dev environment..."
     $distro = Get-WslDistro
-    if (-not $distro) { Write-Log "No Ubuntu distro found; skipping package update" "WARN"; return }
+    if (-not $distro) { Write-Log "No Ubuntu distro found; skipping provisioning" "WARN"; return }
 
-    $packages = "curl wget git vim htop tree unzip zip"
-    wsl -d $distro -e bash -c "sudo apt update && sudo apt upgrade -y && sudo apt install -y $packages"
-    if ($LASTEXITCODE -ne 0) { Write-Log "apt update/install returned exit $LASTEXITCODE" "WARN" }
-    else { Write-Log "Ubuntu packages updated" "SUCCESS" }
+    $provisionSrc = Join-Path $ConfigDir 'wsl-provision.sh'
+    $starshipSrc = Join-Path $ConfigDir 'starship.toml'
+    if (-not (Test-Path $provisionSrc)) { Write-Log "Provision script missing; skipping" "WARN"; return }
+
+    try {
+        if (Test-Path $starshipSrc) {
+            Copy-UnixTextIntoWsl -Distro $distro -LocalPath $starshipSrc -DestPath '/tmp/starship.toml'
+        }
+        Copy-UnixTextIntoWsl -Distro $distro -LocalPath $provisionSrc -DestPath '/tmp/wsl-provision.sh'
+        wsl -d $distro -e bash /tmp/wsl-provision.sh
+        if ($LASTEXITCODE -ne 0) { Write-Log "Provisioning returned exit $LASTEXITCODE" "WARN" }
+        else { Write-Log "WSL dev environment provisioned" "SUCCESS" }
+    }
+    catch { Write-Log "Provisioning error: $($_.Exception.Message)" "WARN" }
 }
 
 function Main {
@@ -135,8 +140,8 @@ function Main {
 
     if ((Test-CommandExists 'wsl') -and (-not $Force) -and (Get-WslDistro)) {
         Write-Log "WSL with Ubuntu is already installed" "INFO"
-        Set-UbuntuConfiguration
-        Update-UbuntuPackage
+        Set-WslConfiguration
+        Initialize-DistroEnvironment
         return
     }
 
@@ -153,8 +158,8 @@ function Main {
         Install-WSLKernelUpdate
         Set-WSL2AsDefault
         Install-UbuntuLatest
-        Set-UbuntuConfiguration
-        Update-UbuntuPackage
+        Set-WslConfiguration
+        Initialize-DistroEnvironment
 
         Write-Log "WSL2 + Ubuntu installed and configured" "SUCCESS"
         Write-Log "A restart may be required to finalize installation" "WARN"

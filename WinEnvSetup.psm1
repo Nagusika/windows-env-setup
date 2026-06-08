@@ -158,5 +158,28 @@ function Get-WslDistro {
         Select-Object -First 1
 }
 
+function Copy-IntoWsl {
+    <#
+    .SYNOPSIS
+        Copy a Windows file into a WSL distro, translating the path with wslpath.
+        Throws if the copy fails.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$Distro,
+        [Parameter(Mandatory)][string]$LocalPath,
+        [Parameter(Mandatory)][string]$DestPath,
+        [switch]$AsRoot
+    )
+
+    $src = ((wsl -d $Distro -e wslpath -u $LocalPath 2>$null) -replace "`0", '').Trim()
+    if ([string]::IsNullOrWhiteSpace($src)) { throw "Could not translate path into WSL: $LocalPath" }
+
+    if ($AsRoot) { wsl -d $Distro -u root -e cp $src $DestPath }
+    else { wsl -d $Distro -e cp $src $DestPath }
+
+    if ($LASTEXITCODE -ne 0) { throw "Failed to copy into WSL: $DestPath (exit $LASTEXITCODE)" }
+}
+
 Export-ModuleMember -Function Initialize-Log, Write-Log, Confirm-Action,
-    Test-CommandExists, Invoke-Native, Install-WingetPackage, Get-WslDistro
+    Test-CommandExists, Invoke-Native, Install-WingetPackage, Get-WslDistro, Copy-IntoWsl
