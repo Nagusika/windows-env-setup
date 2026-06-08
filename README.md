@@ -52,6 +52,10 @@ Installing tools is the easy part — these are the configurations you'd otherwi
 - A **Gruvbox** scheme for Windows Terminal (matching the GlazeWM/Zebar desktop) with a Nerd Font by default.
 - The **same Starship prompt** in PowerShell and WSL.
 
+**Windows, decluttered (no admin needed)**
+- **Dark mode** + a **minimal, left-aligned taskbar**: Windows icon, pinned apps and clock only — search box, Task View, Widgets and Chat hidden.
+- File extensions shown, Explorer opens to *This PC*. All HKCU registry tweaks, fully declarative in [config/windows-tweaks.json](config/windows-tweaks.json) — runs standalone without elevation.
+
 Everything is applied idempotently — re-run any time.
 
 ## 🚀 Quick Start
@@ -93,6 +97,7 @@ Install additional useful packages? (Y/n): y
 .\scripts\install-docker.ps1
 .\scripts\install-git.ps1
 .\scripts\install-github-cli.ps1
+.\scripts\apply-windows-tweaks.ps1   # dark mode + minimal taskbar (no admin)
 ```
 
 ## Prerequisites
