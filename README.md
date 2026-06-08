@@ -1,11 +1,11 @@
 # Windows Environment Setup
 
-Automated installation and configuration script for a complete Windows development environment with a curated set of **50+ FOSS tools** — built to work on a company-managed laptop without tripping your IT policy.
+Automated installation and configuration script for a Windows development environment with a **lean, curated set of essential FOSS tools** — built to work on a company-managed laptop without tripping your IT policy.
 
 ## ✨ Features
 
 - 🎯 **Interactive Installation** - Y/N prompts for each component
-- 📦 **50+ Packages** - Curated collection of FOSS tools
+- 📦 **Lean by default** - ~20 essential packages, not a kitchen sink
 - 🎨 **Color-coded Feedback** - Clear visual progress indicators
 - 🔧 **Flexible** - Choose exactly what you want to install
 - 🛡️ **Corporate-safe by default** - Installed from winget's verified sources; policy-risky tools are opt-in only (⚠️ see [SECURITY.md](SECURITY.md))
@@ -29,17 +29,12 @@ Automated installation and configuration script for a complete Windows developme
 - **WSL2 + Ubuntu** - Linux Subsystem for Windows
 - **Docker Desktop** - Containerization platform
 
-### Additional Packages (50+ tools across categories)
-- Base Shell & UX (PowerShell 7, PowerToys, VSCodium, Flow Launcher...)
-- Browsers (Firefox, LibreWolf)
-- CLI Toolbox (ripgrep, fd, fzf, bat, jq, eza, zoxide, Starship...)
-- Network/Debug/Monitoring (iperf3, CrystalDiskInfo, Fan Control...)
-- Storage/Sync (7-Zip, Rclone, Syncthing)
-- Backups (restic, Kopia, Duplicati)
-- PDF/Images/Notes (GIMP, Inkscape, Joplin, Obsidian...)
-- Media (VLC, mpv.net, Audacity, OBS Studio)
-- Security/Privacy (KeePassXC, Bitwarden)
-- Development Tools (Python, Go, Rust, Node.js...)
+### Additional Packages (a lean set across a few categories)
+- Shell & Terminal (PowerShell 7, Windows Terminal, PowerToys, VSCodium, 7-Zip)
+- CLI Toolbox (ripgrep, fd, fzf, bat, jq, eza, zoxide, fnm, Starship)
+- Development (Python, Go, Rust, Node.js)
+- Security / Passwords (KeePassXC, Bitwarden)
+- Package Managers (Scoop)
 - ⚠️ Advanced — opt-in, may violate IT policy (Wireshark, Nmap, RustDesk, Rufus, Ventoy, VeraCrypt...) — see [SECURITY.md](SECURITY.md)
 
 See [PACKAGES.md](docs/PACKAGES.md) for complete list and usage examples.
@@ -66,8 +61,8 @@ Install Zebar (Status Bar for GlazeWM)? (Y/n): y
 Install WSL2 with Ubuntu? (Y/n): y
 Install Docker Desktop? (y/N): n
 Install additional useful packages? (Y/n): y
-  Install Base Shell & UX packages? (Y/n): y
-  Install CLI Toolbox (FOSS) packages? (Y/n): y
+  Install 'Shell & Terminal' packages? (Y/n): y
+  Install 'CLI Toolbox (FOSS)' packages? (Y/n): y
   ...
 ```
 
@@ -114,7 +109,7 @@ windows-env-setup/
 │   ├── zebar-with-glazewm.html
 │   └── styles_gruvbox.css
 ├── logs/                    # Installation logs (gitignored)
-├── docs/                    # Documentation (see docs/README.md)
+├── docs/                    # Documentation (QUICK_START, PACKAGES, GlazeWM guide)
 ├── LICENSE                  # MIT License
 ├── SECURITY.md              # Corporate policy disclaimer + reporting
 └── CONTRIBUTING.md          # Development setup
@@ -122,11 +117,9 @@ windows-env-setup/
 
 ## 📚 Documentation
 
-- **[docs/README.md](docs/README.md)** ⭐ - Documentation index
 - **[docs/QUICK_START.md](docs/QUICK_START.md)** - 5-minute setup guide for beginners
-- **[docs/GLAZEWM_ZEBAR_GUIDE.md](docs/GLAZEWM_ZEBAR_GUIDE.md)** ⭐ - Complete guide for GlazeWM + Zebar
-- **[docs/PACKAGES.md](docs/PACKAGES.md)** - Complete package list with command examples
-- **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Project structure overview
+- **[docs/GLAZEWM_ZEBAR_GUIDE.md](docs/GLAZEWM_ZEBAR_GUIDE.md)** - Complete guide for GlazeWM + Zebar
+- **[docs/PACKAGES.md](docs/PACKAGES.md)** - Package list with command examples
 
 ## 🔄 Rollback
 
@@ -186,7 +179,6 @@ Contributor setup (pre-commit, PSScriptAnalyzer, commit conventions) lives in
 ✓ Docker Desktop
 ✓ CLI Toolbox
 ✓ Development Tools (Python, Go, Rust, Node.js)
-✓ Storage/Sync tools
 ```
 
 ### Power User Setup

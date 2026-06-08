@@ -226,10 +226,9 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 1. **Check the logs**: `logs\install.log`
 2. **Read the docs**: 
-   - [README.md](README.md) - Documentation index
    - [PACKAGES.md](PACKAGES.md) - Package reference
-   - [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) - Project structure
-   - [PREREQUISITES.md](PREREQUISITES.md) - System prerequisites
+   - [GLAZEWM_ZEBAR_GUIDE.md](GLAZEWM_ZEBAR_GUIDE.md) - GlazeWM + Zebar guide
+   - [Main README](../README.md) - Project overview
 3. **Try individual scripts**: `.\scripts\install-<component>.ps1`
 4. **Search winget**: `winget search <package-name>`
 
