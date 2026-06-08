@@ -9,7 +9,7 @@ kitchen sink. Policy-risky tools live in the opt-in **Advanced** tier (see
 
 | Category | Tier | Tools |
 |----------|------|-------|
-| **Shell & Terminal** | default | PowerShell 7, Windows Terminal, PowerToys, VSCodium, 7-Zip |
+| **Shell & Terminal** | default | PowerShell 7, Windows Terminal, PowerToys, VSCodium, NanaZip |
 | **CLI Toolbox** | default | ripgrep, fd, fzf, bat, jq, eza, zoxide, fnm, Starship |
 | **Development** | default | Python, uv, Go, Rust (rustup), Node.js |
 | **Security / Passwords** | default | KeePassXC, Bitwarden |

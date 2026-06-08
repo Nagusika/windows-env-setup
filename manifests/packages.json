@@ -10,7 +10,7 @@
         { "id": "Microsoft.WindowsTerminal", "name": "Windows Terminal" },
         { "id": "Microsoft.PowerToys", "name": "PowerToys" },
         { "id": "VSCodium.VSCodium", "name": "VSCodium" },
-        { "id": "7zip.7zip", "name": "7-Zip" }
+        { "id": "M2Team.NanaZip", "name": "NanaZip" }
       ]
     },
     {
