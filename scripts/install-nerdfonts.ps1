@@ -1,5 +1,6 @@
-# Installation and configuration of NerdFonts
-# NerdFonts are fonts with icons for terminals and editors
+#Requires -Version 5.1
+#Requires -RunAsAdministrator
+# Installation of Nerd Fonts (patched fonts with icons) on Windows, and optionally in WSL.
 
 param(
     [switch]$Force,
@@ -7,99 +8,62 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Import-Module (Join-Path $PSScriptRoot '..\WinEnvSetup.psm1') -Force
+Initialize-Log -LogFile (Join-Path $PSScriptRoot '..\logs\nerdfonts.log')
 
-function Write-Log {
-    param($Message, $Level = "INFO")
-    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $LogMessage = "[$Timestamp] [$Level] $Message"
-    Write-Host $LogMessage
-    $LogPath = Join-Path $PSScriptRoot "..\logs\nerdfonts.log"
-    $LogMessage | Out-File -FilePath $LogPath -Append -Encoding utf8
+# Map each downloaded family to the registry name pattern its Nerd Font variant uses,
+# so the "already installed" check is per-font instead of always testing CaskaydiaCove.
+$FontInstalledPattern = @{
+    CascadiaCode  = '*CaskaydiaCove*Nerd*'
+    FiraCode      = '*FiraCode*Nerd*'
+    JetBrainsMono = '*JetBrainsMono*Nerd*'
+    SourceCodePro = '*SauceCodePro*Nerd*'
 }
 
 function Test-FontInstalled {
-    param($FontNamePattern)
-    
+    param([string]$FontNamePattern)
     try {
-        $FontProperties = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
-        $MatchingFonts = $FontProperties.PSObject.Properties.Name | Where-Object { $_ -like $FontNamePattern }
-        return $MatchingFonts.Count -gt 0
+        $names = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts").PSObject.Properties.Name
+        return [bool]($names | Where-Object { $_ -like $FontNamePattern })
     }
-    catch {
-        return $false
-    }
+    catch { return $false }
 }
 
 function Get-NerdFontDownloadUrl {
-    param($FontName)
-    
-    $FontUrls = @{
-        "CascadiaCode" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip"
-        "FiraCode" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip"
-        "JetBrainsMono" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
-        "SourceCodePro" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.zip"
-        "Hack" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip"
-        "Mononoki" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Mononoki.zip"
-        "RobotoMono" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/RobotoMono.zip"
-        "UbuntuMono" = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/UbuntuMono.zip"
-    }
-    
-    return $FontUrls[$FontName]
+    param([string]$FontName)
+    return "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$FontName.zip"
 }
 
 function Install-NerdFont {
-    param($FontName)
-    
-    Write-Log "Installing NerdFont: $FontName"
-    
+    param([string]$FontName)
+
+    Write-Log "Installing Nerd Font: $FontName"
     try {
-        # Check if font is already installed
-        if ((Test-FontInstalled "*Caskaydia*Cove*Nerd*Font*") -and (-not $Force)) {
-            Write-Log "Font $FontName already installed" "INFO"
+        $pattern = $FontInstalledPattern[$FontName]
+        if (-not $pattern) { $pattern = "*$FontName*Nerd*" }
+        if ((Test-FontInstalled $pattern) -and (-not $Force)) {
+            Write-Log "$FontName Nerd Font already installed" "INFO"
             return
         }
-        
-        # Get download URL
-        $DownloadUrl = Get-NerdFontDownloadUrl $FontName
-        if (-not $DownloadUrl) {
-            throw "Download URL not found for $FontName"
-        }
-        
-        # Create temporary directory
-        $TempDir = "$env:TEMP\nerdfonts\$FontName"
-        if (Test-Path $TempDir) {
-            Remove-Item $TempDir -Recurse -Force
-        }
-        New-Item -ItemType Directory -Path $TempDir -Force
-        
-        # Download font
-        $ZipPath = "$TempDir\$FontName.zip"
+
+        $url = Get-NerdFontDownloadUrl $FontName
+        $tempDir = Join-Path $env:TEMP "nerdfonts\$FontName"
+        if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
+        New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+
+        $zipPath = Join-Path $tempDir "$FontName.zip"
         Write-Log "Downloading $FontName..."
-        Invoke-WebRequest -Uri $DownloadUrl -OutFile $ZipPath -UseBasicParsing
-        
-        # Extract font
-        Write-Log "Extracting $FontName..."
-        Expand-Archive -Path $ZipPath -DestinationPath $TempDir -Force
-        
-        # Install fonts
-        $FontFiles = Get-ChildItem -Path $TempDir -Filter "*.ttf" -Recurse
-        foreach ($FontFile in $FontFiles) {
-            Write-Log "Installing $($FontFile.Name)..."
-            
-            # Copy to system fonts folder
-            $FontPath = "$env:WINDIR\Fonts\$($FontFile.Name)"
-            Copy-Item -Path $FontFile.FullName -Destination $FontPath -Force
-            
-            # Register font in registry
-            $fontRegistryName = $FontFile.BaseName
-            $regPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
-            Set-ItemProperty -Path $regPath -Name "$fontRegistryName (TrueType)" -Value $FontFile.Name
+        Invoke-WebRequest -Uri $url -OutFile $zipPath -UseBasicParsing
+        Expand-Archive -Path $zipPath -DestinationPath $tempDir -Force
+
+        $regPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+        foreach ($fontFile in (Get-ChildItem -Path $tempDir -Filter "*.ttf" -Recurse)) {
+            Copy-Item -Path $fontFile.FullName -Destination "$env:WINDIR\Fonts\$($fontFile.Name)" -Force
+            Set-ItemProperty -Path $regPath -Name "$($fontFile.BaseName) (TrueType)" -Value $fontFile.Name
         }
-        
-        # Cleanup
-        Remove-Item $TempDir -Recurse -Force
-        
-        Write-Log "Font $FontName installed successfully" "SUCCESS"
+
+        Remove-Item $tempDir -Recurse -Force
+        Write-Log "$FontName Nerd Font installed" "SUCCESS"
     }
     catch {
         Write-Log "Error installing $FontName : $($_.Exception.Message)" "ERROR"
@@ -108,198 +72,84 @@ function Install-NerdFont {
 }
 
 function Install-NerdFontsInWSL {
-    Write-Log "Installing NerdFonts in WSL Ubuntu..."
-    
-    try {
-        # Check if WSL is running
-        try {
-            $wslStatus = wsl --status
-            if ($wslStatus -match "The Windows Subsystem for Linux optional component is not enabled") {
-                Write-Log "WSL optional component not enabled. Skipping WSL font installation." "WARN"
-                return
-            }
-        } catch {
-            Write-Log "WSL is not ready. A restart may be required. Skipping WSL font installation." "WARN"
-            return
-        }
-        
-        # Script to install fonts in WSL
-        $WSLScript = @"
+    $distro = Get-WslDistro
+    if (-not $distro) {
+        Write-Log "WSL/Ubuntu not available; skipping WSL font installation" "WARN"
+        return
+    }
+
+    Write-Log "Installing Nerd Fonts in WSL ($distro)..."
+    $wslScript = @'
 #!/bin/bash
 set -e
-
-echo "Installing NerdFonts in WSL Ubuntu..."
-
-# Update packages
+echo "Installing Nerd Fonts in WSL..."
 sudo apt update
-
-# Install dependencies
 sudo apt install -y fontconfig unzip wget
-
-# Create fonts directory
 mkdir -p ~/.local/share/fonts
-
-# Function to download and install a font
-install_nerdfont() {
-    local font_name=\$1
-    local font_url=\$2
-    
-    echo "Installing \$font_name..."
-    
-    # Download font
-    wget -O "/tmp/\$font_name.zip" "\$font_url"
-    
-    # Extract to fonts directory
-    unzip -o "/tmp/\$font_name.zip" -d ~/.local/share/fonts/
-    
-    # Cleanup
-    rm "/tmp/\$font_name.zip"
-}
-
-# Install fonts
-install_nerdfont "CascadiaCode" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip"
-install_nerdfont "FiraCode" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip"
-install_nerdfont "JetBrainsMono" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
-install_nerdfont "SourceCodePro" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.zip"
-
-# Rebuild font cache
+for f in CascadiaCode FiraCode JetBrainsMono SourceCodePro; do
+    wget -O "/tmp/$f.zip" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$f.zip"
+    unzip -o "/tmp/$f.zip" -d ~/.local/share/fonts/
+    rm "/tmp/$f.zip"
+done
 fc-cache -fv
+echo "Nerd Fonts installed in WSL"
+'@ -replace "`r`n", "`n"
 
-echo "NerdFonts installed in WSL Ubuntu successfully"
-"@
-        
-        # Save script temporarily
-        $ScriptPath = "$env:TEMP\install_nerdfonts_wsl.sh"
-        $WSLScript | Set-Content -Path $ScriptPath -Encoding UTF8
-        
-        # Execute script in WSL
-        wsl -d Ubuntu -e bash $ScriptPath
-        
-        # Cleanup
-        Remove-Item $ScriptPath -Force
-        
-        Write-Log "NerdFonts installed in WSL Ubuntu successfully" "SUCCESS"
+    try {
+        # Write the script as UTF-8 without a BOM and with LF endings; a BOM on the first
+        # line would make bash fail with "bad interpreter".
+        $scriptPath = Join-Path $env:TEMP 'install_nerdfonts_wsl.sh'
+        [System.IO.File]::WriteAllText($scriptPath, $wslScript)
+
+        $wslScriptPath = ((wsl -d $distro -e wslpath -u $scriptPath 2>$null) -replace "`0", "").Trim()
+        wsl -d $distro -e bash $wslScriptPath
+        if ($LASTEXITCODE -ne 0) { Write-Log "WSL font install returned exit $LASTEXITCODE" "WARN" }
+        else { Write-Log "Nerd Fonts installed in WSL" "SUCCESS" }
+
+        Remove-Item $scriptPath -Force -ErrorAction SilentlyContinue
     }
     catch {
-        Write-Log "Error installing NerdFonts in WSL: $($_.Exception.Message)" "ERROR"
+        Write-Log "Error installing Nerd Fonts in WSL: $($_.Exception.Message)" "ERROR"
     }
 }
 
 function Set-FontsInWindowsTerminal {
     Write-Log "Configuring fonts in Windows Terminal..."
-    
     try {
-        # Path to Windows Terminal configuration file
-        $ConfigPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-        
-        if (Test-Path $ConfigPath) {
-            # Read current configuration
-            $Config = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
-            
-            # Update default font
-            if ($Config.profiles.defaults) {
-                $Config.profiles.defaults.fontFace = "Cascadia Code Nerd Font"
-            }
-            
-            # Update individual profiles
-            if ($Config.profiles.list) {
-                foreach ($TerminalProfile in $Config.profiles.list) {
-                    if (-not $TerminalProfile.fontFace) {
-                        $TerminalProfile | Add-Member -NotePropertyName "fontFace" -NotePropertyValue "Cascadia Code Nerd Font"
-                    }
-                }
-            }
-            
-            # Save configuration
-            $Config | ConvertTo-Json -Depth 10 | Set-Content -Path $ConfigPath -Encoding UTF8
-            
-            Write-Log "Windows Terminal configuration updated with NerdFonts" "SUCCESS"
-        }
-        else {
+        $configPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+        if (-not (Test-Path $configPath)) {
             Write-Log "Windows Terminal configuration file not found" "WARN"
+            return
         }
+
+        $config = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+        if ($config.profiles.defaults) {
+            $config.profiles.defaults.fontFace = "CaskaydiaCove Nerd Font"
+        }
+        $config | ConvertTo-Json -Depth 10 | Set-Content -Path $configPath -Encoding UTF8
+        Write-Log "Windows Terminal default font set to a Nerd Font" "SUCCESS"
     }
     catch {
         Write-Log "Error configuring fonts in Windows Terminal: $($_.Exception.Message)" "ERROR"
     }
 }
 
-function New-FontConfigForWSL {
-    Write-Log "Creating font configuration for WSL..."
-    
-    try {
-        # Font configuration script for WSL
-        $WSLFontConfig = @"
-# Font configuration for WSL Ubuntu
-# This file configures default fonts for terminals
-
-# Configuration for bash
-if [ -f ~/.bashrc ]; then
-    echo 'export TERM=xterm-256color' >> ~/.bashrc
-    echo 'export LANG=en_US.UTF-8' >> ~/.bashrc
-fi
-
-# Configuration for zsh (if installed)
-if [ -f ~/.zshrc ]; then
-    echo 'export TERM=xterm-256color' >> ~/.zshrc
-    echo 'export LANG=en_US.UTF-8' >> ~/.zshrc
-fi
-
-# Configuration for vim
-if [ -f ~/.vimrc ]; then
-    echo 'set guifont=Cascadia\ Code\ Nerd\ Font:h12' >> ~/.vimrc
-fi
-
-# Configuration for neovim
-if [ -d ~/.config/nvim ]; then
-    mkdir -p ~/.config/nvim
-    echo 'vim.opt.guifont = "Cascadia Code Nerd Font:h12"' > ~/.config/nvim/init.lua
-fi
-
-echo "WSL font configuration completed"
-"@
-        
-        # Save configuration
-        $ConfigPath = Join-Path $PSScriptRoot "..\config\wsl-font-config.sh"
-        if (-not (Test-Path $ConfigPath) -or (Compare-Object ($WSLFontConfig -split '\r?\n') (Get-Content $ConfigPath))) {
-            $WSLFontConfig | Set-Content -Path $ConfigPath -Encoding UTF8
-            Write-Log "WSL font configuration saved in $ConfigPath" "SUCCESS"
-        } else {
-            Write-Log "WSL font configuration is already up to date." "INFO"
-        }
-    }
-    catch {
-        Write-Log "Error creating WSL font configuration: $($_.Exception.Message)" "ERROR"
-    }
-}
-
 function Main {
-    Write-Log "=== NerdFonts Installation ==="
-    
+    Write-Log "=== Nerd Fonts Installation ==="
     try {
-        # Install fonts on Windows
-        foreach ($FontName in $Fonts) {
-            Install-NerdFont $FontName
+        foreach ($fontName in $Fonts) {
+            Install-NerdFont $fontName
         }
-        
-        # Install fonts in WSL
         Install-NerdFontsInWSL
-        
-        # Configure fonts in Windows Terminal
         Set-FontsInWindowsTerminal
-        
-        # Create font configuration for WSL
-        New-FontConfigForWSL
-        
-        Write-Log "NerdFonts installed and configured successfully" "SUCCESS"
-        Write-Log "Restart recommended to finalize font installation" "WARN"
-        
+
+        Write-Log "Nerd Fonts installed and configured" "SUCCESS"
+        Write-Log "Restart terminals/apps to pick up the new fonts" "WARN"
     }
     catch {
-        Write-Log "Error installing NerdFonts: $($_.Exception.Message)" "ERROR"
+        Write-Log "Error installing Nerd Fonts: $($_.Exception.Message)" "ERROR"
         throw
     }
 }
 
-# Execution
 Main
