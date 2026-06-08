@@ -39,6 +39,21 @@ Automated installation and configuration script for a Windows development enviro
 
 See [PACKAGES.md](docs/PACKAGES.md) for complete list and usage examples.
 
+## 🐧 Beyond packages: the tweaks that matter
+
+Installing tools is the easy part — these are the configurations you'd otherwise hand-tune:
+
+**WSL, tuned for a work machine**
+- **Corporate networking** — `networkingMode=mirrored` + `dnsTunneling` + `autoProxy`, so VPN, `localhost` and the corporate proxy just work inside WSL.
+- **Faster & lighter** — `appendWindowsPath=false` (snappier shell start), `autoMemoryReclaim` + `sparseVhd` (no more `vmmem` eating your RAM/disk).
+- **Ready to use** — Ubuntu is provisioned with the same CLI toolbox as Windows (ripgrep, fd, bat, fzf, eza, zoxide) and a tuned `~/.bashrc`.
+
+**One coherent look**
+- A **Gruvbox** scheme for Windows Terminal (matching the GlazeWM/Zebar desktop) with a Nerd Font by default.
+- The **same Starship prompt** in PowerShell and WSL.
+
+Everything is applied idempotently — re-run any time.
+
 ## 🚀 Quick Start
 
 > **New to this?** Check out the [Quick Start Guide](docs/QUICK_START.md) for step-by-step instructions!
