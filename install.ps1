@@ -177,6 +177,24 @@ function Install-Zebar {
     }
 }
 
+# Function to apply Windows personalization tweaks (HKCU - no admin needed)
+function Install-WindowsTweaks {
+    if (-not (Confirm-Action "Apply Windows tweaks (dark mode, minimal left taskbar, no search)?" $true)) {
+        Write-Log "Windows tweaks skipped by user" "SKIP"
+        return
+    }
+
+    Write-Log "Applying Windows personalization tweaks..."
+    try {
+        & ".\scripts\apply-windows-tweaks.ps1"
+        Write-Log "Windows tweaks applied successfully" "SUCCESS"
+    }
+    catch {
+        Write-Log "Error applying Windows tweaks: $($_.Exception.Message)" "ERROR"
+        Write-Log "You can retry later by running: .\scripts\apply-windows-tweaks.ps1" "INFO"
+    }
+}
+
 # Function to install Docker
 function Install-Docker {
     if (-not (Confirm-Action "Install Docker Desktop?" $false)) {
@@ -262,7 +280,10 @@ function Main {
         # Window Manager installations
         Install-GlazeWM
         Install-Zebar
-        
+
+        # Windows personalization (dark mode, minimal taskbar)
+        Install-WindowsTweaks
+
         # Optional installations
         Install-WSL
         Install-Docker

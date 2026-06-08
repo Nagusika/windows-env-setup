@@ -1,0 +1,15 @@
+{
+  "description": "Declarative Windows personalization tweaks applied by scripts/apply-windows-tweaks.ps1. Every key is under HKCU, so NO administrator rights are required. Edit values to taste; re-running is idempotent.",
+  "tweaks": [
+    { "desc": "Dark mode (apps)", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme", "type": "DWord", "value": 0 },
+    { "desc": "Dark mode (system)", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme", "type": "DWord", "value": 0 },
+    { "desc": "Taskbar aligned left", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl", "type": "DWord", "value": 0 },
+    { "desc": "Hide the taskbar search box", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode", "type": "DWord", "value": 0 },
+    { "desc": "Disable search highlights", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled", "type": "DWord", "value": 0 },
+    { "desc": "Hide the Task View button", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowTaskViewButton", "type": "DWord", "value": 0 },
+    { "desc": "Hide the Widgets button", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarDa", "type": "DWord", "value": 0 },
+    { "desc": "Hide the Chat button", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarMn", "type": "DWord", "value": 0 },
+    { "desc": "Show file extensions", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "type": "DWord", "value": 0 },
+    { "desc": "Open Explorer to This PC", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo", "type": "DWord", "value": 1 }
+  ]
+}
