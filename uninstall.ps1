@@ -1,3 +1,6 @@
+#Requires -Version 5.1
+#Requires -RunAsAdministrator
+
 # Windows Environment Uninstall Script
 # Allows clean uninstallation of all installed components
 
@@ -7,6 +10,7 @@ param(
     [switch]$KeepFonts,
     [switch]$KeepGit,
     [switch]$KeepGitHubCli,
+    [switch]$RemoveWinget,
     [switch]$Verbose
 )
 
@@ -59,16 +63,22 @@ function Uninstall-GitHubCli {
     }
 }
 
-# Function to uninstall winget
+# Function to uninstall winget (App Installer) — OFF by default.
+# Microsoft.DesktopAppInstaller is a Windows OS component this project did not install;
+# removing it can break managed app-update flows. Opt-in only, via -RemoveWinget.
 function Uninstall-Winget {
-    Write-Log "Uninstalling winget..."
+    if (-not $RemoveWinget) {
+        Write-Log "Skipping winget removal (App Installer is a Windows component; pass -RemoveWinget to force)" "SKIP"
+        return
+    }
+
+    Write-Log "Removing App Installer (winget) as requested via -RemoveWinget..." "WARN"
     try {
-        # Uninstall winget via PowerShell
         Get-AppxPackage -Name "Microsoft.DesktopAppInstaller" | Remove-AppxPackage
-        Write-Log "winget uninstalled successfully" "SUCCESS"
+        Write-Log "App Installer (winget) removed" "SUCCESS"
     }
     catch {
-        Write-Log "Error uninstalling winget: $($_.Exception.Message)" "ERROR"
+        Write-Log "Error removing App Installer: $($_.Exception.Message)" "ERROR"
     }
 }
 
@@ -129,33 +139,25 @@ function Uninstall-NerdFonts {
     
     Write-Log "Uninstalling NerdFonts..."
     try {
-        # List of NerdFonts to uninstall
-        $NerdFonts = @(
-            "Cascadia Code",
-            "Fira Code",
-            "JetBrains Mono",
-            "Source Code Pro",
-            "Hack",
-            "Mononoki",
-            "Roboto Mono",
-            "Ubuntu Mono"
-        )
-        
-        foreach ($FontName in $NerdFonts) {
-            # Remove font files
-            $FontFiles = Get-ChildItem -Path "$env:WINDIR\Fonts" -Filter "*$FontName*" -ErrorAction SilentlyContinue
-            foreach ($FontFile in $FontFiles) {
-                Write-Log "Removing font: $($FontFile.Name)"
-                Remove-Item $FontFile.FullName -Force
-            }
-            
-            # Remove registry entries
-            $RegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
-            $RegEntries = Get-ItemProperty -Path $RegPath | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -like "*$FontName*" }
-            foreach ($Entry in $RegEntries) {
-                Write-Log "Removing registry entry: $($Entry.Name)"
-                Remove-ItemProperty -Path $RegPath -Name $Entry.Name -Force
-            }
+        # The installer only ever copies Nerd Font variants, whose file and registry
+        # names contain "NerdFont" (e.g. CaskaydiaCoveNerdFont-Regular). Matching on
+        # that pattern removes exactly what we installed and leaves the OS-bundled
+        # "Cascadia Code" font untouched.
+        $NerdFontPattern = "*NerdFont*"
+
+        # Remove font files installed by this project
+        $FontFiles = Get-ChildItem -Path "$env:WINDIR\Fonts" -Filter $NerdFontPattern -ErrorAction SilentlyContinue
+        foreach ($FontFile in $FontFiles) {
+            Write-Log "Removing font: $($FontFile.Name)"
+            Remove-Item $FontFile.FullName -Force -ErrorAction SilentlyContinue
+        }
+
+        # Remove matching registry entries
+        $RegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+        $RegEntries = (Get-ItemProperty -Path $RegPath).PSObject.Properties | Where-Object { $_.Name -like $NerdFontPattern }
+        foreach ($Entry in $RegEntries) {
+            Write-Log "Removing registry entry: $($Entry.Name)"
+            Remove-ItemProperty -Path $RegPath -Name $Entry.Name -Force -ErrorAction SilentlyContinue
         }
         
         Write-Log "NerdFonts uninstalled successfully" "SUCCESS"
@@ -202,30 +204,29 @@ function Uninstall-DockerDesktop {
     }
 }
 
-# Function to clean configuration files
+# Function to clean DEPLOYED user configuration.
+# NEVER deletes the repository's own config/ or logs/ folders (versioned sources).
 function Remove-ConfigurationFiles {
-    Write-Log "Removing configuration files..."
+    Write-Log "Removing deployed user configuration..."
     try {
-        # Remove configuration directory
-        if (Test-Path "config") {
-            Remove-Item "config" -Recurse -Force
+        # GlazeWM / Zebar deployed config
+        $GlzrPath = "$env:USERPROFILE\.glzr"
+        if (Test-Path $GlzrPath) {
+            Write-Log "Removing $GlzrPath"
+            Remove-Item $GlzrPath -Recurse -Force -ErrorAction SilentlyContinue
         }
-        
-        # Remove logs directory
-        if (Test-Path "logs") {
-            Remove-Item "logs" -Recurse -Force
-        }
-        
-        # Remove WSL configuration files
+
+        # WSL global config deployed to the user profile
         $WSLConfigPath = "$env:USERPROFILE\.wslconfig"
         if (Test-Path $WSLConfigPath) {
-            Remove-Item $WSLConfigPath -Force
+            Write-Log "Removing $WSLConfigPath"
+            Remove-Item $WSLConfigPath -Force -ErrorAction SilentlyContinue
         }
-        
-        Write-Log "Configuration files removed successfully" "SUCCESS"
+
+        Write-Log "Deployed configuration removed (repository files left intact)" "SUCCESS"
     }
     catch {
-        Write-Log "Error removing configuration files: $($_.Exception.Message)" "ERROR"
+        Write-Log "Error removing deployed configuration: $($_.Exception.Message)" "ERROR"
     }
 }
 
