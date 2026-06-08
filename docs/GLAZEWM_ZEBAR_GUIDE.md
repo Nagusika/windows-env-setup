@@ -44,14 +44,20 @@ Press `Alt + Shift + E` to safely exit both GlazeWM and Zebar.
 ## ⌨️ Default Keybindings
 
 ### Window Management
-- `Alt + H/J/K/L` or `Alt + Arrow Keys` - Focus window in direction
-- `Alt + Shift + Arrow Keys` - Move window in direction
-- `Alt + Enter` - Open Windows Terminal
-- `Alt + Shift + Q` - Close focused window
-- `Alt + T` - Toggle tiling mode
-- `Alt + F` - Toggle fullscreen
-- `Alt + M` - Minimize window
-- `Alt + Shift + Space` - Toggle floating mode
+
+> Mental model: **Alt = focus**, **Alt+Shift = move the window**, **Alt+Shift+Ctrl = move the workspace** to another monitor. The HJKL cluster behaves identically in all three.
+
+- `Alt + H/J/K/L` or `Alt + Arrows` — **Focus** the window in a direction
+- `Alt + Shift + H/J/K/L` or `Alt + Shift + Arrows` — **Move the window** in a direction
+- `Alt + Shift + Ctrl + H/J/K/L` or `+ Arrows` — **Move the workspace** to another monitor
+- `Alt + V` — Toggle tiling direction (where the next window splits)
+- `Alt + Space` — Cycle focus: tiling → floating → fullscreen
+- `Alt + Shift + Space` — Toggle floating mode
+- `Alt + T` — Toggle tiling mode
+- `Alt + F` — Toggle fullscreen
+- `Alt + M` — Minimize window
+- `Alt + Enter` — Open Windows Terminal
+- `Alt + Shift + Q` — Close focused window
 
 ### Workspace Navigation
 - `Alt + 1-9` - Switch to workspace 1-9
@@ -61,10 +67,9 @@ Press `Alt + Shift + E` to safely exit both GlazeWM and Zebar.
 - `Alt + D` - Last used workspace
 
 ### Window Resizing
-- `Alt + R` - Enter resize mode
+- `Alt + R` — Enter resize mode
   - In resize mode: `H/J/K/L` or Arrow Keys to resize
   - `Enter` or `Escape` to exit resize mode
-- `Alt + U/I/O/P` - Quick resize shortcuts
 
 ### System
 - `Alt + Shift + R` - Reload GlazeWM configuration
@@ -90,6 +95,11 @@ The default configuration includes 9 workspaces across 3 monitors:
 - **Workspace 7 (🌍)**: Browser - Web browsing
 - **Workspace 8 (📂)**: Explorer - File management
 - **Workspace 9 (📜)**: Notes - Note-taking apps
+
+> **Only have 1 or 2 monitors?** GlazeWM falls back to your primary monitor, so every
+> workspace still works — they just share one screen. To organize them per screen, edit
+> the `bind_to_monitor` values in `config.yaml`: set them all to `0` for a single screen,
+> or use `0` and `1` for two.
 
 ## 🎨 Window Rules
 
@@ -206,7 +216,7 @@ cat $env:USERPROFILE\.glzr\zebar\errors.log
 1. **Quick Terminal**: Press `Alt + Enter` anywhere to open a new terminal
 2. **Float on Demand**: Press `Alt + Shift + Space` to float a window temporarily
 3. **Focus Cycling**: Press `Alt + Space` to cycle through tiling → floating → fullscreen
-4. **Multi-Monitor**: Use `Alt + Shift + H/L` to move workspaces between monitors
+4. **Multi-Monitor**: Use `Alt + Shift + Ctrl + H/L` to move a workspace between monitors
 5. **Workspace Memory**: Press `Alt + D` to jump back to your previous workspace
 
 ## 🎯 Next Steps
