@@ -276,10 +276,7 @@ function Install-WingetPackages {
             @{Id="Starship.Starship"; Name="Starship prompt"}
         )
         "Network / Debug / Monitoring" = @(
-            @{Id="WiresharkFoundation.Wireshark"; Name="Wireshark"},
-            @{Id="Insecure.Nmap"; Name="Nmap"},
             @{Id="ESnet.iperf3"; Name="iperf3"},
-            @{Id="ProcessHacker.ProcessHacker"; Name="Process Hacker"},
             @{Id="LibreHardwareMonitor.LibreHardwareMonitor"; Name="Libre Hardware Monitor"},
             @{Id="Rem0o.FanControl"; Name="Fan Control"},
             @{Id="CrystalDewWorld.CrystalDiskInfo"; Name="CrystalDiskInfo"},
@@ -288,9 +285,7 @@ function Install-WingetPackages {
         "Storage / FS / Sync" = @(
             @{Id="7zip.7zip"; Name="7-Zip"},
             @{Id="Rclone.Rclone"; Name="Rclone"},
-            @{Id="Syncthing.Syncthing"; Name="Syncthing"},
-            @{Id="WinFsp.WinFsp"; Name="WinFsp"},
-            @{Id="SSHFS-Win.SSHFS-Win"; Name="SSHFS-Win"}
+            @{Id="Syncthing.Syncthing"; Name="Syncthing"}
         )
         "Backups (FOSS)" = @(
             @{Id="restic.restic"; Name="restic"},
@@ -312,18 +307,9 @@ function Install-WingetPackages {
             @{Id="Audacity.Audacity"; Name="Audacity"},
             @{Id="OBSProject.OBSStudio"; Name="OBS Studio"}
         )
-        "Remote / P2P" = @(
-            @{Id="RustDesk.RustDesk"; Name="RustDesk"},
-            @{Id="qBittorrent.qBittorrent"; Name="qBittorrent"}
-        )
         "Security / Privacy / Passwords" = @(
             @{Id="KeePassXCTeam.KeePassXC"; Name="KeePassXC"},
-            @{Id="Bitwarden.Bitwarden"; Name="Bitwarden"},
-            @{Id="VeraCrypt.VeraCrypt"; Name="VeraCrypt"}
-        )
-        "Boot Tools (FOSS)" = @(
-            @{Id="Rufus.Rufus"; Name="Rufus"},
-            @{Id="Ventoy.Ventoy"; Name="Ventoy"}
+            @{Id="Bitwarden.Bitwarden"; Name="Bitwarden"}
         )
         "Development Tools" = @(
             @{Id="Python.Python.3.12"; Name="Python 3.12"},
@@ -359,6 +345,43 @@ function Install-WingetPackages {
         }
     }
     
+    # Advanced / policy-risky tools - opt-in, default NO, with an explicit warning.
+    # These commonly trigger corporate EDR/DLP or violate acceptable-use policy.
+    $AdvancedPackages = @(
+        @{Id="WiresharkFoundation.Wireshark"; Name="Wireshark (network sniffer)"},
+        @{Id="Insecure.Nmap"; Name="Nmap (port scanner)"},
+        @{Id="ProcessHacker.ProcessHacker"; Name="Process Hacker / System Informer"},
+        @{Id="RustDesk.RustDesk"; Name="RustDesk (unmanaged remote access)"},
+        @{Id="Rufus.Rufus"; Name="Rufus (bootable USB creator)"},
+        @{Id="Ventoy.Ventoy"; Name="Ventoy (bootable USB creator)"},
+        @{Id="VeraCrypt.VeraCrypt"; Name="VeraCrypt (encrypted containers)"},
+        @{Id="SSHFS-Win.SSHFS-Win"; Name="SSHFS-Win (remote filesystem mount)"},
+        @{Id="WinFsp.WinFsp"; Name="WinFsp (user-mode filesystem driver)"}
+    )
+
+    Write-Host ""
+    Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
+    Write-Host "  ADVANCED TOOLS - may violate your employer's IT/security policy"   -ForegroundColor Yellow
+    Write-Host "  Network sniffers, remote access, bootable-media and encryption"     -ForegroundColor Yellow
+    Write-Host "  tools can trigger EDR/DLP alerts. See SECURITY.md. You install"      -ForegroundColor Yellow
+    Write-Host "  these at your own responsibility."                                   -ForegroundColor Yellow
+    Write-Host "  ----------------------------------------------------------------" -ForegroundColor Yellow
+    if (Confirm-Action "Install ADVANCED tools (may violate IT policy)?" $false) {
+        foreach ($Package in $AdvancedPackages) {
+            try {
+                Write-Log "Installing $($Package.Name)..."
+                winget install -e --id $($Package.Id) --silent --accept-package-agreements --accept-source-agreements
+                Write-Log "$($Package.Name) installed" "SUCCESS"
+            }
+            catch {
+                Write-Log "Failed to install $($Package.Name): $($_.Exception.Message)" "WARN"
+            }
+        }
+    }
+    else {
+        Write-Log "Advanced (policy-risky) tools skipped" "SKIP"
+    }
+
     Write-Log "Additional packages installation completed" "SUCCESS"
 }
 
