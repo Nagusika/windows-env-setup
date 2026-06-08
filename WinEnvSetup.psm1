@@ -142,5 +142,21 @@ function Install-WingetPackage {
     return $false
 }
 
+function Get-WslDistro {
+    <#
+    .SYNOPSIS
+        Return the first installed WSL distro whose name matches (default: Ubuntu),
+        or $null. Strips the null bytes that `wsl --list` emits when piped.
+    #>
+    [CmdletBinding()]
+    param([string]$Match = 'Ubuntu')
+
+    if (-not (Test-CommandExists 'wsl')) { return $null }
+    return wsl --list --quiet 2>$null |
+        ForEach-Object { ($_ -replace "`0", '').Trim() } |
+        Where-Object { $_ -match $Match } |
+        Select-Object -First 1
+}
+
 Export-ModuleMember -Function Initialize-Log, Write-Log, Confirm-Action,
-    Test-CommandExists, Invoke-Native, Install-WingetPackage
+    Test-CommandExists, Invoke-Native, Install-WingetPackage, Get-WslDistro
