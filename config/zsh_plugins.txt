@@ -1,0 +1,7 @@
+# Antidote plugin bundle (loaded by ~/.zshrc).
+# Order matters: fzf-tab must load after compinit (run in .zshrc) and before the
+# widget-wrapping plugins (autosuggestions, fast-syntax-highlighting).
+
+Aloxaf/fzf-tab
+zsh-users/zsh-autosuggestions
+zdharma-continuum/fast-syntax-highlighting

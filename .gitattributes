@@ -1,7 +1,9 @@
 # Files consumed by Linux/WSL must keep LF endings regardless of the OS the repo
 # is checked out on; a CRLF would make bash fail ("bad interpreter") or corrupt
 # /etc/wsl.conf.
-*.sh                 text eol=lf
-config/wsl.conf      text eol=lf
-config/wslconfig     text eol=lf
-config/starship.toml text eol=lf
+*.sh                   text eol=lf
+config/wsl.conf        text eol=lf
+config/wslconfig       text eol=lf
+config/starship.toml   text eol=lf
+config/zshrc           text eol=lf
+config/zsh_plugins.txt text eol=lf

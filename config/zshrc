@@ -1,0 +1,85 @@
+# ~/.zshrc - deployed by windows-env-setup (wsl-provision.sh).
+# A fish-like, POSIX-compatible zsh: autosuggestions + syntax highlighting +
+# fzf-tab completion + Starship, with image previews in the shell. Fast startup.
+
+# --- PATH (yazi, atuin, starship, cargo, etc.) ---
+export PATH="$HOME/.local/bin:$HOME/.atuin/bin:$HOME/.cargo/bin:$PATH"
+
+# --- History: large, deduped, shared across sessions ---
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS INC_APPEND_HISTORY EXTENDED_HISTORY
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS INTERACTIVE_COMMENTS
+
+# --- Completion (must run BEFORE fzf-tab loads) ---
+autoload -Uz compinit
+compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump"
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'   # case-insensitive
+zstyle ':completion:*' menu no                              # let fzf-tab take over
+zstyle ':completion:*:descriptions' format '[%d]'
+
+# --- Plugins via antidote (loads fzf-tab, then autosuggestions, then highlighting) ---
+if [[ -f ~/.antidote/antidote.zsh ]]; then
+  source ~/.antidote/antidote.zsh
+  antidote load ~/.zsh_plugins.txt
+fi
+
+# --- fzf-tab previews: dirs via eza, files via bat, images via chafa ---
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons --group-directories-first $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview '~/.config/fzf/preview.sh $realpath'
+zstyle ':fzf-tab:*' fzf-flags --height=60% --layout=reverse --border
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+# --- fzf: fd as the source, rich previews, Ctrl-T / Ctrl-R / Alt-C ---
+if command -v fzf >/dev/null; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+  export FZF_DEFAULT_OPTS="--height 60% --layout reverse --border --preview-window right:60%:wrap"
+  export FZF_CTRL_T_OPTS="--preview '~/.config/fzf/preview.sh {}'"
+  export FZF_ALT_C_OPTS="--preview 'eza -1 --color=always --icons {}'"
+  # fzf >= 0.48 ships its own shell integration; fall back to the packaged files.
+  if ! eval "$(fzf --zsh)" 2>/dev/null; then
+    [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+    [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
+  fi
+fi
+
+# --- Tool initialisation ---
+command -v zoxide   >/dev/null && eval "$(zoxide init zsh)"
+command -v atuin    >/dev/null && eval "$(atuin init zsh --disable-up-arrow)"   # magic history on Ctrl-R
+command -v starship >/dev/null && eval "$(starship init zsh)"                    # two-line Gruvbox prompt
+
+# --- Aliases: modern replacements (handle Ubuntu's fdfind/batcat names) ---
+command -v batcat >/dev/null && alias bat='batcat'
+command -v fdfind >/dev/null && alias fd='fdfind'
+if command -v eza >/dev/null; then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -l --icons --git --group-directories-first'
+  alias la='eza -la --icons --git --group-directories-first'
+  alias lt='eza --tree --level=2 --icons'
+fi
+if command -v bat >/dev/null || command -v batcat >/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colorised man pages
+  export BAT_THEME="gruvbox-dark"
+fi
+
+# --- Images in the shell ---
+# `img file.png` prints an image inline (sixel works in Windows Terminal 1.22+).
+command -v chafa >/dev/null && alias img='chafa'
+# `y` opens the yazi file manager (image previews) and cd's to where you quit.
+if command -v yazi >/dev/null; then
+  function y() {
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+      builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+  }
+fi
+
+# --- autosuggestions: accept with End / Ctrl-Space ---
+bindkey '^ ' autosuggest-accept 2>/dev/null
