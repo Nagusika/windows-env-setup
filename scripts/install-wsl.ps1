@@ -120,17 +120,25 @@ function Initialize-DistroEnvironment {
     if (-not $distro) { Write-Log "No Ubuntu distro found; skipping provisioning" "WARN"; return }
 
     $provisionSrc = Join-Path $ConfigDir 'wsl-provision.sh'
-    $starshipSrc = Join-Path $ConfigDir 'starship.toml'
     if (-not (Test-Path $provisionSrc)) { Write-Log "Provision script missing; skipping" "WARN"; return }
 
+    # Shell config files staged in /tmp for the provision script to place.
+    $staged = [ordered]@{
+        'starship.toml'   = '/tmp/starship.toml'
+        'zshrc'           = '/tmp/zshrc'
+        'zsh_plugins.txt' = '/tmp/zsh_plugins.txt'
+        'fzf-preview.sh'  = '/tmp/fzf-preview.sh'
+    }
+
     try {
-        if (Test-Path $starshipSrc) {
-            Copy-UnixTextIntoWsl -Distro $distro -LocalPath $starshipSrc -DestPath '/tmp/starship.toml'
+        foreach ($name in $staged.Keys) {
+            $src = Join-Path $ConfigDir $name
+            if (Test-Path $src) { Copy-UnixTextIntoWsl -Distro $distro -LocalPath $src -DestPath $staged[$name] }
         }
         Copy-UnixTextIntoWsl -Distro $distro -LocalPath $provisionSrc -DestPath '/tmp/wsl-provision.sh'
         wsl -d $distro -e bash /tmp/wsl-provision.sh
         if ($LASTEXITCODE -ne 0) { Write-Log "Provisioning returned exit $LASTEXITCODE" "WARN" }
-        else { Write-Log "WSL dev environment provisioned" "SUCCESS" }
+        else { Write-Log "WSL dev environment provisioned (zsh + tools)" "SUCCESS" }
     }
     catch { Write-Log "Provisioning error: $($_.Exception.Message)" "WARN" }
 }

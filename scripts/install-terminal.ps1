@@ -184,6 +184,10 @@ function Set-WindowsShellTheme {
         $block = @'
 
 # >>> windows-env-setup >>>
+# Fish-like predictions (ghost text + list) via PSReadLine.
+try { Set-PSReadLineOption -PredictionSource HistoryAndPlugin -PredictionViewStyle ListView }
+catch { try { Set-PSReadLineOption -PredictionSource History } catch {} }
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete -ErrorAction SilentlyContinue
 if (Get-Command starship -ErrorAction SilentlyContinue) { Invoke-Expression (&starship init powershell) }
 if (Get-Command zoxide   -ErrorAction SilentlyContinue) { Invoke-Expression (& { (zoxide init powershell | Out-String) }) }
 Set-Alias -Name ls  -Value eza -ErrorAction SilentlyContinue
