@@ -46,11 +46,12 @@ Installing tools is the easy part — these are the configurations you'd otherwi
 **WSL, tuned for a work machine**
 - **Corporate networking** — `networkingMode=mirrored` + `dnsTunneling` + `autoProxy`, so VPN, `localhost` and the corporate proxy just work inside WSL.
 - **Faster & lighter** — `appendWindowsPath=false` (snappier shell start), `autoMemoryReclaim` + `sparseVhd` (no more `vmmem` eating your RAM/disk).
-- **Ready to use** — Ubuntu is provisioned with the same CLI toolbox as Windows (ripgrep, fd, bat, fzf, eza, zoxide) and a tuned `~/.bashrc`.
+- **A fish-like shell** — Ubuntu defaults to **zsh** with autosuggestions, syntax highlighting and `fzf-tab` completion (POSIX-compatible, unlike fish), plus the modern CLI toolbox (ripgrep, fd, bat, fzf, eza, zoxide), `atuin` history and `delta` git diffs.
+- **Images in the shell** — `chafa` + the `yazi` file manager render real image previews (sixel) right in Windows Terminal.
 
 **One coherent look**
 - A **Gruvbox** scheme for Windows Terminal (matching the GlazeWM/Zebar desktop) with a Nerd Font by default.
-- The **same Starship prompt** in PowerShell and WSL.
+- The **same Starship prompt** in PowerShell and WSL; PowerShell also gets fish-like predictions via PSReadLine.
 
 **Windows, decluttered (no admin needed)**
 - **Dark mode** + a **minimal, left-aligned taskbar**: Windows icon, pinned apps and clock only — search box, Task View, Widgets and Chat hidden.
